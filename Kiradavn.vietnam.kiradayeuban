@@ -9,7 +9,7 @@ local isSupportedGame = supportedGames[gameId] or false
 if not isSupportedGame then
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "Cảnh Báo",
-        Text = "Game này có thể không hỗ trợ tất cả script. Hãy thử và kiểm tra!",
+        Text = "hãy spirct đúng game nhé không là không sài được!",
         Duration = 10
     })
 end
@@ -211,6 +211,30 @@ AddButton(Tab1o, {
             game:GetService("StarterGui"):SetCore("SendNotification", {
                 Title = "Lỗi",
                 Text = "Không thể chạy script Speed Hub: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab1o, {
+    Name = "OMG HUB sever vip free (getkey)",
+    Callback = function()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://pastefy.app/US0MtPIY/raw"))()
+            print("OMG HUB: Đã tải và chạy script thành công!")
+        end)
+        if not success then
+            warn("Lỗi load OMG HUB: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script OMG HUB: " .. tostring(err),
+                Duration = 5
+            })
+        else
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Thành Công",
+                Text = "OMG HUB đã được tải và chạy!",
                 Duration = 5
             })
         end
@@ -437,4 +461,4 @@ AddButton(Tab4o, {
 })
 
 -- Đợi game tải hoàn tất
-          repeat task.wait() until game:IsLoaded() and game:GetService("Players") and game.Players.LocalPlayer and game.Players.LocalPlayer:FindFirstChild("PlayerGui")
+repeat task.wait() until game:IsLoaded() and game:GetService("Players") and game.Players.LocalPlayer and game.Players.LocalPlayer:FindFirstChild("PlayerGui")
