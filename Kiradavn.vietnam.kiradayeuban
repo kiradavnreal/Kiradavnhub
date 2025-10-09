@@ -8,8 +8,8 @@ local isSupportedGame = supportedGames[gameId] or false
 
 if not isSupportedGame then
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "thông báo",
-        Text = "hãy bật spirct đúng game nhé không là không sài được!",
+        Title = "Cảnh Báo",
+        Text = "Game này có thể không hỗ trợ tất cả script. Hãy thử và kiểm tra!",
         Duration = 10
     })
 end
@@ -332,8 +332,15 @@ AddButton(Tab3o, {
     Name = "Speed Hub (getkey)",
     Callback = function()
         local success, err = pcall(function()
+            setclipboard("KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE")
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Key System",
+                Text = "Key cho Speed Hub đã được sao chép vào clipboard! Dán vào prompt key của script.\nNguồn: AK Gaming EZ",
+                Duration = 10
+            })
+            print("Key đã sao chép: KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE")
             local scriptContent = game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
-            print("Speed Hub (99 Đêm): Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            print("Speed Hub: Đã tải script, kích thước: " .. #scriptContent .. " bytes")
             loadstring(scriptContent)()
         end)
         if not success then
