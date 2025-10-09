@@ -5,8 +5,8 @@ local supportedGames = {
 }
 if not supportedGames[gameId] then
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "thông báo",
-        Text = " sài script đúng của game bạn đang chơi nhé 😍!",
+        Title = "Cảnh Báo",
+        Text = "Game này có thể không hỗ trợ tất cả script. Hãy thử và kiểm tra!",
         Duration = 10
     })
 end
@@ -101,7 +101,7 @@ MinimizeButton({
     StrokeColor = Color3.fromRGB(255, 0, 0)
 })
 
--- Hàm thêm nút với xử lý lỗi
+-- Hàm thêm nút script
 local function addScriptButton(tab, name, url)
     AddButton(tab, {
         Name = name,
@@ -143,7 +143,7 @@ addScriptButton(Tab3o, "Speed Hub (getkey)", "https://raw.githubusercontent.com/
 addScriptButton(Tab3o, "Hack Farm Kim Cương", "https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
 addScriptButton(Tab3o, "Skibidi", "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
 
--- Tab: key vĩnh viễn 
+-- Tab: Key System
 local Tab5o = MakeTab({Name = "Key System"})
 AddButton(Tab5o, {
     Name = "Copy Speed Hub Key",
@@ -159,7 +159,7 @@ AddButton(Tab5o, {
             })
         else
             game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "Key Vĩnh viễn",
+                Title = "Key System",
                 Text = "Key Speed Hub đã được sao chép vào clipboard! Nguồn: YouTube EZ AK Gaming",
                 Duration = 10
             })
@@ -167,8 +167,8 @@ AddButton(Tab5o, {
     end
 })
 
--- Tab: Discord
-local Tab4o = MakeTab({Name = "mạng xh"})
+-- Tab: Mạng Xã Hội
+local Tab4o = MakeTab({Name = "Mạng Xã Hội"})
 local function addLinkButton(tab, name, url, platform)
     AddButton(tab, {
         Name = name,
