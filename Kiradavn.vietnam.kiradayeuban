@@ -6,7 +6,7 @@ local supportedGames = {
 if not supportedGames[gameId] then
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "thông báo",
-        Text = "sài đúng spirct của game nhé ko là ko sài được !",
+        Text = " sài script đúng của game bạn đang chơi nhé 😍!",
         Duration = 10
     })
 end
@@ -159,8 +159,8 @@ AddButton(Tab5o, {
             })
         else
             game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "Key vĩnh viễn lấy đc sài thoải mái",
-                Text = "Key Speed Hub đã được sao chép Nguồn: YouTube idol EZ AK Gaming 😍",
+                Title = "Key System",
+                Text = "Key Speed Hub đã được sao chép vào clipboard! Nguồn: YouTube EZ AK Gaming",
                 Duration = 10
             })
         end
