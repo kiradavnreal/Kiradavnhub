@@ -1,0 +1,440 @@
+-- Kiểm tra game hiện tại (chỉ để thông báo, không giới hạn script)
+local gameId = game.PlaceId
+local supportedGames = {
+    [2753915549] = "Blox Fruits", -- PlaceId của Blox Fruits
+    [1234567890] = "99 Đêm"      -- Thay bằng PlaceId thực tế của 99 Đêm
+}
+local isSupportedGame = supportedGames[gameId] or false
+
+if not isSupportedGame then
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Cảnh Báo",
+        Text = "Game này có thể không hỗ trợ tất cả script. Hãy thử và kiểm tra!",
+        Duration = 10
+    })
+end
+
+-- Tải UI từ URL
+local success, err = pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua"))()
+end)
+if not success then
+    warn("Lỗi tải UI library: " .. tostring(err))
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Lỗi UI",
+        Text = "Không thể tải UI library: " .. tostring(err),
+        Duration = 10
+    })
+end
+
+-- Tạo UI tùy chỉnh cho intro với hiệu ứng làm mờ dần
+local function createIntroAnimation()
+    local TweenService = game:GetService("TweenService")
+    local StarterGui = game:GetService("StarterGui")
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "IntroGui"
+    screenGui.Parent = PlayerGui
+    screenGui.IgnoreGuiInset = true
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 300, 0, 150)
+    frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+    frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    frame.BackgroundTransparency = 0.5
+    frame.BorderSizePixel = 0
+    frame.Parent = screenGui
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười làm & viết: Kirada & Hiếu TV"
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textLabel.TextScaled = true
+    textLabel.Parent = frame
+
+    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In)
+    local fadeIn = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 0})
+    local fadeInFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 0.2})
+
+    local fadeOut = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 1})
+    local fadeOutFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 1})
+
+    fadeIn:Play()
+    fadeInFrame:Play()
+    fadeIn.Completed:Wait()
+
+    wait(5)
+
+    fadeOut:Play()
+    fadeOutFrame:Play()
+    fadeOut.Completed:Wait()
+
+    screenGui:Destroy()
+end
+
+-- Gọi hàm hiển thị animation
+createIntroAnimation()
+
+-- Tạo cửa sổ UI
+local Window = MakeWindow({
+    Hub = {
+        Title = "Kirada VN",
+        Animation = "YouTube: Kirada VN"
+    },
+    Key = {
+        KeySystem = false,
+        Title = "Key System",
+        Description = "",
+        KeyLink = "",
+        Keys = {"1234"},
+        Notifi = {
+            Notifications = true,
+            CorrectKey = "Running the Script...",
+            Incorrectkey = "The key is incorrect",
+            CopyKeyLink = "Copied to Clipboard"
+        }
+    }
+})
+
+-- Kiểm tra tải logo
+local success, err = pcall(function()
+    local ImageService = game:GetService("ContentProvider")
+    ImageService:PreloadAsync({"rbxassetid://89326205091486"})
+    print("Logo loaded successfully: rbxassetid://89326205091486")
+end)
+if not success then
+    warn("Lỗi tải logo: " .. tostring(err) .. ". Kiểm tra ID ảnh hoặc executor.")
+end
+
+MinimizeButton({
+    Image = "rbxassetid://89326205091486",
+    Size = {60, 60},
+    Color = Color3.fromRGB(10, 10, 10),
+    Corner = true,
+    Stroke = false,
+    StrokeColor = Color3.fromRGB(255, 0, 0)
+})
+
+------ Tab: Blox Fruit
+local Tab1o = MakeTab({Name = "Blox Fruit"})
+
+AddButton(Tab1o, {
+    Name = "W-AZURE",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua")
+            print("W-AZURE: Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load W-AZURE: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script W-AZURE: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab1o, {
+    Name = "H4X Script",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua", true)
+            print("H4X Script: Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load H4X Script: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script H4X: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab1o, {
+    Name = "Nat Hub",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://get.nathub.xyz/loader")
+            print("Nat Hub: Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load Nat Hub: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script Nat Hub: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab1o, {
+    Name = "Quantum Hub",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua")
+            print("Quantum Hub: Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load Quantum Hub: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script Quantum Hub: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab1o, {
+    Name = "Speed Hub",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+            print("Speed Hub: Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load Speed Hub: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script Speed Hub: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab1o, {
+    Name = "Giảm Lag",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
+            print("Giảm Lag: Đã tải script FixLag, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Giảm Lag",
+                Text = "Đã chạy script FixLag cho mọi game!",
+                Duration = 5
+            })
+        end)
+        if not success then
+            warn("Lỗi load script FixLag: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script FixLag: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+------ Tab: Hop Server
+local Tab2o = MakeTab({Name = "Hop Server"})
+
+AddButton(Tab2o, {
+    Name = "Teddy Hub (getkey)",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TEDDYHUB-FREEMIUM")
+            print("Teddy Hub (Hop Server): Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load Teddy Hub (Hop Server): " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script Teddy Hub: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+------ Tab: 99 Đêm
+local Tab3o = MakeTab({Name = "99 Đêm"})
+
+AddButton(Tab3o, {
+    Name = "NATHUB (getkey)",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://get.nathub.xyz/loader")
+            print("NATHUB (99 Đêm): Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load NATHUB (99 Đêm): " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script NATHUB: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab3o, {
+    Name = "H4X (getkey)",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua", true)
+            print("H4X (99 Đêm): Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load H4X (99 Đêm): " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script H4X: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab3o, {
+    Name = "Speed Hub (getkey)",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+            print("Speed Hub (99 Đêm): Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load Speed Hub (99 Đêm): " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script Speed Hub: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab3o, {
+    Name = "Hack Farm Kim Cương",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
+            print("Hack Farm Kim Cương (99 Đêm): Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load Hack Farm Kim Cương (99 Đêm): " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script Hack Farm Kim Cương: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab3o, {
+    Name = "Skibidi",
+    Callback = function()
+        local success, err = pcall(function()
+            local scriptContent = game:HttpGet("https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
+            print("Skibidi (99 Đêm): Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            loadstring(scriptContent)()
+        end)
+        if not success then
+            warn("Lỗi load Skibidi (99 Đêm): " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể chạy script Skibidi: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+})
+
+------ Tab: Discord
+local Tab4o = MakeTab({Name = "Discord"})
+
+AddButton(Tab4o, {
+    Name = "Copy Discord Link",
+    Callback = function()
+        local success, err = pcall(function()
+            setclipboard("https://discord.gg/kJ9ydA2PP4")
+            print("Đã sao chép link Discord: https://discord.gg/kJ9ydA2PP4")
+        end)
+        if not success then
+            warn("Lỗi sao chép link Discord: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể sao chép link Discord: " .. tostring(err),
+                Duration = 5
+            })
+        else
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Discord",
+                Text = "Đã sao chép link Discord vào clipboard!",
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab4o, {
+    Name = "Copy YouTube Link",
+    Callback = function()
+        local success, err = pcall(function()
+            setclipboard("https://www.youtube.com/@kiradavn")
+            print("Đã sao chép link YouTube: https://www.youtube.com/@kiradavn")
+        end)
+        if not success then
+            warn("Lỗi sao chép link YouTube: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể sao chép link YouTube: " .. tostring(err),
+                Duration = 5
+            })
+        else
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "YouTube",
+                Text = "Đã sao chép link YouTube vào clipboard!",
+                Duration = 5
+            })
+        end
+    end
+})
+
+AddButton(Tab4o, {
+    Name = "Copy TikTok Link",
+    Callback = function()
+        local success, err = pcall(function()
+            setclipboard("https://www.tiktok.com/@offbyebyesad")
+            print("Đã sao chép link TikTok: https://www.tiktok.com/@offbyebyesad")
+        end)
+        if not success then
+            warn("Lỗi sao chép link TikTok: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể sao chép link TikTok: " .. tostring(err),
+                Duration = 5
+            })
+        else
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "TikTok",
+                Text = "Đã sao chép link TikTok vào clipboard!",
+                Duration = 5
+            })
+        end
+    end
+})
+
+-- Đợi game tải hoàn tất
+          repeat task.wait() until game:IsLoaded() and game:GetService("Players") and game.Players.LocalPlayer and game.Players.LocalPlayer:FindFirstChild("PlayerGui")
