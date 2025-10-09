@@ -8,8 +8,8 @@ local isSupportedGame = supportedGames[gameId] or false
 
 if not isSupportedGame then
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Cảnh Báo",
-        Text = "Game này có thể không hỗ trợ tất cả script. Hãy thử và kiểm tra!",
+        Title = "thông báo",
+        Text = " sài sprict đúng game nhé!",
         Duration = 10
     })
 end
