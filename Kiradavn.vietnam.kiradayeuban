@@ -332,15 +332,8 @@ AddButton(Tab3o, {
     Name = "Speed Hub (getkey)",
     Callback = function()
         local success, err = pcall(function()
-            setclipboard("KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE")
-            game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "Key System",
-                Text = "Key cho Speed Hub đã được sao chép vào clipboard! Dán vào prompt key của script.\nNguồn: AK Gaming EZ",
-                Duration = 10
-            })
-            print("Key đã sao chép: KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE")
             local scriptContent = game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
-            print("Speed Hub: Đã tải script, kích thước: " .. #scriptContent .. " bytes")
+            print("Speed Hub (99 Đêm): Đã tải script, kích thước: " .. #scriptContent .. " bytes")
             loadstring(scriptContent)()
         end)
         if not success then
@@ -387,6 +380,33 @@ AddButton(Tab3o, {
                 Title = "Lỗi",
                 Text = "Không thể chạy script Skibidi: " .. tostring(err),
                 Duration = 5
+            })
+        end
+    end
+})
+
+------ Tab: Key System
+local Tab5o = MakeTab({Name = "Key System"})
+
+AddButton(Tab5o, {
+    Name = "Copy Speed Hub Key",
+    Callback = function()
+        local success, err = pcall(function()
+            setclipboard("KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE")
+            print("Đã sao chép key Speed Hub: KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE")
+        end)
+        if not success then
+            warn("Lỗi sao chép key Speed Hub: " .. tostring(err))
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không thể sao chép key Speed Hub: " .. tostring(err),
+                Duration = 5
+            })
+        else
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Key System",
+                Text = "Key Speed Hub đã được sao chép vào clipboard! Nguồn: YouTube EZ AK Gaming",
+                Duration = 10
             })
         end
     end
