@@ -6,7 +6,7 @@ local supportedGames = {
 if not supportedGames[gameId] then
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "thông báo",
-        Text = "sài đúng spirct của game nhé ko là ko sài được 😘!",
+        Text = "sài đúng spirct của game nhé ko là ko sài được !",
         Duration = 10
     })
 end
