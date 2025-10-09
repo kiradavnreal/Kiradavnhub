@@ -143,7 +143,7 @@ addScriptButton(Tab3o, "Speed Hub (getkey)", "https://raw.githubusercontent.com/
 addScriptButton(Tab3o, "Hack Farm Kim Cương", "https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
 addScriptButton(Tab3o, "Skibidi", "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
 
--- Tab: Key System
+-- Tab: key vĩnh viễn 
 local Tab5o = MakeTab({Name = "Key System"})
 AddButton(Tab5o, {
     Name = "Copy Speed Hub Key",
@@ -168,7 +168,7 @@ AddButton(Tab5o, {
 })
 
 -- Tab: Discord
-local Tab4o = MakeTab({Name = "Discord"})
+local Tab4o = MakeTab({Name = "mạng xh"})
 local function addLinkButton(tab, name, url, platform)
     AddButton(tab, {
         Name = name,
