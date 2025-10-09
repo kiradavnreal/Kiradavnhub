@@ -159,7 +159,7 @@ AddButton(Tab5o, {
             })
         else
             game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "Key System",
+                Title = "Key Vĩnh viễn",
                 Text = "Key Speed Hub đã được sao chép vào clipboard! Nguồn: YouTube EZ AK Gaming",
                 Duration = 10
             })
