@@ -1,237 +1,149 @@
--- Kiểm tra executor và kick
-local function checkExecutor()
-    local executor = identifyexecutor and identifyexecutor() or "Unknown"
-    if executor:lower():find("codex") or executor:lower():find("fluxus") then
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Cảnh Báo",
-            Text = "Đừng sài nó không an toàn",
-            Duration = 5
-        })
-        wait(5)
-        game:Shutdown()
-    elseif executor:lower():find("arceus") then
-        game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "Cảnh Báo",
-            Text = "Bạn khinh thường chúng tôi?",
-            Duration = 5
-        })
-        wait(5)
-        game:Shutdown()
-    end
-end
-checkExecutor()
+local _g,_t,_c,_n,_p,_ts,_r,_ph=game:GetService("Players").LocalPlayer.PlayerGui,game:GetService("TweenService"),game:GetService("ContentProvider"),game:GetService("StarterGui"),game:GetService("Players"),game:GetService("TeleportService"),game:GetService("RunService"),game:GetService("PhysicsService")
+local gId=game.PlaceId
+local sG={[2753915549]="Blox Fruits",[1234567890]="99 Đêm"}
+if not sG[gId] then _n:SetCore("SendNotification",{Title="Thông Báo",Text="Cảm ơn bạn đã sử dụng script của mình nhé 😘",Duration=10}) end
 
--- Kiểm tra game
-local _g = game:GetService("Players").LocalPlayer.PlayerGui
-local _t = game:GetService("TweenService")
-local _c = game:GetService("ContentProvider")
-local _n = game:GetService("StarterGui")
-local gId = game.PlaceId
-local sG = {
-    [2753915549] = "Blox Fruits",
-    [1234567890] = "99 Đêm" -- Thay bằng PlaceId thực tế của 99 Đêm
-}
-if not sG[gId] then
-    _n:SetCore("SendNotification", {
-        Title = "Thông Báo",
-        Text = "Cảm ơn bạn đã sử dụng script của mình nhé 😘",
-        Duration = 10
-    })
-end
-
--- Tải UI
-pcall(function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua"))()
-end)
-
--- Intro animation
-local function _iA()
-    local sG = Instance.new("ScreenGui", _g)
-    sG.Name = "IntroGui"
-    sG.IgnoreGuiInset = true
-
-    local f = Instance.new("Frame", sG)
-    f.Size = UDim2.new(0, 300, 0, 150)
-    f.Position = UDim2.new(0.5, -150, 0.5, -75)
-    f.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    f.BackgroundTransparency = 0.5
-    f.BorderSizePixel = 0
-
-    local tL = Instance.new("TextLabel", f)
-    tL.Size = UDim2.new(1, 0, 0.6, 0)
-    tL.BackgroundTransparency = 1
-    tL.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười làm & viết: Kirada & Hiếu TV"
-    tL.TextColor3 = Color3.fromRGB(255, 255, 255)
-    tL.TextScaled = true
-
-    local iL = Instance.new("ImageLabel", f)
-    iL.Size = UDim2.new(0, 100, 0, 100)
-    iL.Position = UDim2.new(0.5, -50, 0.6, 0)
-    iL.BackgroundTransparency = 1
-    iL.Image = "rbxassetid://75676578090181"
-    iL.ImageTransparency = 1
-
-    pcall(function()
-        _c:PreloadAsync({"rbxassetid://75676578090181"})
+local function checkAdmin()
+    local adminIds={[912348]=true,[120173604]=true}
+    _p.PlayerAdded:Connect(function(player)
+        if adminIds[player.UserId] then
+            if player.UserId==120173604 then
+                pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
+            else
+                _n:SetCore("SendNotification",{Title="Cảnh Báo",Text="Admin vô server sẽ đổi server trong 5s nữa",Duration=5})
+                wait(5)
+                pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
+            end
+        elseif player.Name:lower():find("admin") or player:GetRoleInGroup(game.CreatorId)~="Guest" then
+            _n:SetCore("SendNotification",{Title="Cảnh Báo",Text="Admin vô server sẽ đổi server trong 5s nữa",Duration=5})
+            wait(5)
+            pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
+        end
     end)
+end
+checkAdmin()
 
-    local tI = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In)
-    local fIT = _t:Create(tL, tI, {TextTransparency = 0})
-    local fIF = _t:Create(f, tI, {BackgroundTransparency = 0.2})
-    local fII = _t:Create(iL, tI, {ImageTransparency = 0})
+pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua"))() end)
+pcall(function() _c:PreloadAsync({"rbxassetid://756765780901","rbxassetid://75676578090181","rbxassetid://89326205091486"}) end)
 
-    local fOT = _t:Create(tL, tI, {TextTransparency = 1})
-    local fOF = _t:Create(f, tI, {BackgroundTransparency = 1})
-    local fOI = _t:Create(iL, tI, {ImageTransparency = 1})
-
+local function _iA()
+    local s=Instance.new("ScreenGui",_g)
+    s.Name="IntroGui"
+    s.IgnoreGuiInset=true
+    local f=Instance.new("Frame",s)
+    f.Size=UDim2.new(0,300,0,150)
+    f.Position=UDim2.new(0.5,-150,0.5,-75)
+    f.BackgroundColor3=Color3.fromRGB(0,0,0)
+    f.BackgroundTransparency=0.5
+    local t=Instance.new("TextLabel",f)
+    t.Size=UDim2.new(1,0,0.6,0)
+    t.BackgroundTransparency=1
+    t.Text="Kirada VN Hack\nTác giả: Kirada & Habato\nNgười làm & viết: Kirada & Hiếu TV"
+    t.TextColor3=Color3.fromRGB(255,255,255)
+    t.TextScaled=true
+    local i=Instance.new("ImageLabel",f)
+    i.Size=UDim2.new(0,100,0,100)
+    i.Position=UDim2.new(0.5,-50,0.6,0)
+    i.BackgroundTransparency=1
+    i.Image="rbxassetid://75676578090181"
+    i.ImageTransparency=1
+    local tI=TweenInfo.new(1,Enum.EasingStyle.Sine)
+    local fIT,fIF,fII=_t:Create(t,tI,{TextTransparency=0}),_t:Create(f,tI,{BackgroundTransparency=0.2}),_t:Create(i,tI,{ImageTransparency=0})
+    local fOT,fOF,fOI=_t:Create(t,tI,{TextTransparency=1}),_t:Create(f,tI,{BackgroundTransparency=1}),_t:Create(i,tI,{ImageTransparency=1})
     fIT:Play()
     fIF:Play()
     fII:Play()
     fIT.Completed:Wait()
-
     wait(5)
-
     fOT:Play()
     fOF:Play()
     fOI:Play()
     fOT.Completed:Wait()
-
-    sG:Destroy()
+    s:Destroy()
 end
 _iA()
 
--- Tạo UI
-local W = MakeWindow({
-    Hub = {Title = "Kirada VN", Animation = "YouTube: Kirada VN"},
-    Key = {KeySystem = false, Title = "Key System", Keys = {"1234"}, Notifi = {Notifications = true, CorrectKey = "Running the Script...", Incorrectkey = "The key is incorrect", CopyKeyLink = "Copied to Clipboard"}}
-})
+local W=MakeWindow({Hub={Title="Kirada VN",Animation="YouTube: Kirada VN"},Key={KeySystem=false,Title="Key System",Keys={"1234"},Notifi={Notifications=true,CorrectKey="Running the Script...",Incorrectkey="The key is incorrect",CopyKeyLink="Copied to Clipboard"}}})
+MinimizeButton({Image="rbxassetid://89326205091486",Size={60,60},Color=Color3.fromRGB(10,10,10),Corner=true,Stroke=false,StrokeColor=Color3.fromRGB(255,0,0)})
 
--- Tải logo
-pcall(function()
-    _c:PreloadAsync({"rbxassetid://89326205091486"})
-end)
-
-MinimizeButton({
-    Image = "rbxassetid://89326205091486",
-    Size = {60, 60},
-    Color = Color3.fromRGB(10, 10, 10),
-    Corner = true,
-    Stroke = false,
-    StrokeColor = Color3.fromRGB(255, 0, 0)
-})
-
--- Hàm thêm nút script
-local function _aSB(t, n, u)
-    AddButton(t, {
-        Name = n,
-        Callback = function()
-            local s, e = pcall(function()
-                loadstring(game:HttpGet(u))()
-            end)
-            if not s then
-                _n:SetCore("SendNotification", {
-                    Title = "Lỗi",
-                    Text = "Không thể chạy script " .. n .. ": " .. tostring(e),
-                    Duration = 5
-                })
-            end
-        end
-    })
-end
-
--- Tab: Blox Fruit
-local T1 = MakeTab({Name = "Blox Fruit"})
-_aSB(T1, "W-AZURE", "https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua")
-_aSB(T1, "H4X Script", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
-_aSB(T1, "Nat Hub", "https://get.nathub.xyz/loader")
-_aSB(T1, "Quantum Hub", "https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua")
-_aSB(T1, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
-_aSB(T1, "OMG HUB sever vip free (getkey)", "https://pastefy.app/US0MtPIY/raw")
-_aSB(T1, "Giảm Lag", "https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
-
--- Tab: Hop Server
-local T2 = MakeTab({Name = "Hop Server"})
-_aSB(T2, "Teddy Hub (getkey)", "https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TEDDYHUB-FREEMIUM")
-
--- Tab: 99 Đêm
-local T3 = MakeTab({Name = "99 Đêm"})
-_aSB(T3, "NATHUB (getkey)", "https://get.nathub.xyz/loader")
-_aSB(T3, "H4X (getkey)", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
-_aSB(T3, "Speed Hub (getkey)", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
-_aSB(T3, "Hack Farm Kim Cương", "https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
-_aSB(T3, "Skibidi", "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
-
--- Tab: Key System
-local T5 = MakeTab({Name = "Key System"})
-AddButton(T5, {
-    Name = "Copy Speed Hub Key",
-    Callback = function()
-        local s, e = pcall(function()
-            setclipboard("KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE")
+local function _aB(t,n,u,s)
+    AddButton(t,{Name=n,Callback=function()
+        local success,err=pcall(function()
+            if u:find("http") then loadstring(game:HttpGet(u))()
+            else setclipboard(u) end
         end)
-        if not s then
-            _n:SetCore("SendNotification", {
-                Title = "Lỗi",
-                Text = "Không thể sao chép key Speed Hub: " .. tostring(e),
-                Duration = 5
-            })
-        else
-            _n:SetCore("SendNotification", {
-                Title = "Key System",
-                Text = "Key Speed Hub đã được sao chép vào clipboard! Nguồn: YouTube EZ AK Gaming",
-                Duration = 10
-            })
-        end
-    end
-})
-
--- Tab: Mạng Xã Hội
-local T4 = MakeTab({Name = "Mạng Xã Hội"})
-local function _aLB(t, n, u, p)
-    AddButton(t, {
-        Name = n,
-        Callback = function()
-            local s, e = pcall(function()
-                setclipboard(u)
-            end)
-            if not s then
-                _n:SetCore("SendNotification", {
-                    Title = "Lỗi",
-                    Text = "Không thể sao chép link " .. p .. ": " .. tostring(e),
-                    Duration = 5
-                })
-            else
-                _n:SetCore("SendNotification", {
-                    Title = p,
-                    Text = "Đã sao chép link " .. p .. " vào clipboard!",
-                    Duration = 5
-                })
-            end
-        end
-    })
+        if not success then _n:SetCore("SendNotification",{Title="Lỗi",Text="Không thể "..(u:find("http") and "chạy script " or "sao chép link ")..n..": "..tostring(err),Duration=5})
+        else _n:SetCore("SendNotification",{Title=s or n,Text="Đã "..(u:find("http") and "chạy script " or "sao chép link ")..(s or n).." vào clipboard!"..(s and " Nguồn: "..s or ""),Duration=u:find("http") and 5 or 10}) end
+    end})
 end
-_aLB(T4, "Copy Discord Link", "https://discord.gg/kJ9ydA2PP4", "Discord")
-_aLB(T4, "Copy YouTube Link", "https://www.youtube.com/@kiradavn", "YouTube")
-_aLB(T4, "Copy TikTok Link", "https://www.tiktok.com/@offbyebyesad", "TikTok")
 
--- Chống anti-cheat
+local T1=MakeTab({Name="Blox Fruit"})
+_aB(T1,"W-AZURE","https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua")
+_aB(T1,"H4X Script","https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
+_aB(T1,"Nat Hub","https://get.nathub.xyz/loader")
+_aB(T1,"Quantum Hub","https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua")
+_aB(T1,"Speed Hub","https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+_aB(T1,"OMG HUB sever vip free (getkey)","https://pastefy.app/US0MtPIY/raw")
+_aB(T1,"Giảm Lag","https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
+
+local T2=MakeTab({Name="Hop Server"})
+_aB(T2,"Teddy Hub (getkey)","https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TEDDYHUB-FREEMIUM")
+
+local T3=MakeTab({Name="99 Đêm"})
+_aB(T3,"NATHUB (getkey)","https://get.nathub.xyz/loader")
+_aB(T3,"H4X (getkey)","https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
+_aB(T3,"Speed Hub (getkey)","https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+_aB(T3,"Hack Farm Kim Cương","https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
+_aB(T3,"Skibidi","https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
+
+local T5=MakeTab({Name="Key System"})
+_aB(T5,"Copy Speed Hub Key","KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE","Key System")
+
+local T6=MakeTab({Name="Idol YTB Hack"})
+_aB(T6,"Copy Vịt Lỏd Link","https://www.youtube.com/channel/UCQinN9_tN8ln_Mk3hqEfLLw","Vịt Lỏd")
+_aB(T6,"Copy EZ AK Gaming Link","https://www.youtube.com/@akgamingytb999","EZ AK Gaming")
+_aB(T6,"Copy TBoy Link","https://www.youtube.com/channel/UCTwTw3BeiQm2dNtsVeCxlYw","TBoy")
+
+local T4=MakeTab({Name="Mạng Xã Hội"})
+_aB(T4,"Copy Discord Link","https://discord.gg/kJ9ydA2PP4","Discord")
+_aB(T4,"Copy YouTube Link","https://www.youtube.com/@kiradavn","YouTube")
+_aB(T4,"Copy TikTok Link","https://www.tiktok.com/@offbyebyesad","TikTok")
+
 local function _aC()
-    local mt = getrawmetatable(game)
-    local _ni = mt.__namecall
-    setreadonly(mt, false)
-    mt.__namecall = function(self, ...)
-        local args = {...}
-        local method = getnamecallmethod()
-        if method == "FireServer" or method == "InvokeServer" then
-            if tostring(self) == "AntiCheat" or tostring(self) == "AC" then
-                return
-            end
+    local mt=getrawmetatable(game)
+    local _ni,_ii=mt.__namecall,mt.__index
+    setreadonly(mt,false)
+    mt.__namecall=function(self,...)
+        local args={...}
+        local method=getnamecallmethod()
+        if method=="FireServer" or method=="InvokeServer" then
+            if tostring(self)=="AntiCheat" or tostring(self)=="AC" or tostring(self)=="FlyDetection" or tostring(self)=="HeightCheck" then return end
         end
-        return _ni(self, ...)
+        return _ni(self,...)
     end
-    setreadonly(mt, true)
+    mt.__index=function(self,key)
+        if self:IsA("Humanoid") and (key=="WalkSpeed" or key=="JumpPower" or key=="HipHeight") then return math.random(15,17)+math.random() end
+        if self:IsA("Character") and key=="Position" then
+            local pos=_ii(self,key)
+            return Vector3.new(pos.X+math.random(-0.1,0.1),pos.Y+math.random(-0.05,0.05),pos.Z+math.random(-0.1,0.1))
+        end
+        return _ii(self,key)
+    end
+    setreadonly(mt,true)
+    local char=_p.LocalPlayer.Character or _p.LocalPlayer.CharacterAdded:Wait()
+    local hum=char:WaitForChild("Humanoid")
+    local root=char:WaitForChild("HumanoidRootPart")
+    _ph:CreateCollisionGroup("NoClip")
+    _ph:CollisionGroupSetCollidable("NoClip","Default",false)
+    for _,part in pairs(char:GetDescendants()) do
+        if part:IsA("BasePart") then _ph:SetPartCollisionGroup(part,"NoClip") end
+    end
+    _r.Heartbeat:Connect(function()
+        if hum:GetState()==Enum.HumanoidStateType.Freefall or hum:GetState()==Enum.HumanoidStateType.Flying then
+            root.Velocity=root.Velocity+Vector3.new(math.random(-1,1)/10,math.random(-1,1)/10,math.random(-1,1)/10)
+        end
+    end)
 end
 pcall(_aC)
 
--- Đợi game tải
 repeat task.wait() until game:IsLoaded() and _g
