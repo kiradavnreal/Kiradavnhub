@@ -191,44 +191,17 @@ addButton(tab4, "Sao Chép Link Discord", "https://discord.gg/kJ9ydA2PP4", "Disc
 addButton(tab4, "Sao Chép Link YouTube", "https://www.youtube.com/@kiradavn", "YouTube")
 addButton(tab4, "Sao Chép Link TikTok", "https://www.tiktok.com/@offbyebyesad", "TikTok")
 
--- Danh sách múi giờ (trừ Trung Quốc)
-local timeZones = {
-    {Name = "Việt Nam (Đắk Lắk/Sài Gòn)", Offset = 7 * 3600}, -- +07 ICT
-    {Name = "Mỹ (Eastern)", Offset = -4 * 3600}, -- -04 EDT
-    {Name = "Vương Quốc Anh", Offset = 1 * 3600}, -- +01 BST
-    {Name = "Nhật Bản", Offset = 9 * 3600}, -- +09 JST
-    {Name = "Đức", Offset = 2 * 3600}, -- +02 CEST
-    {Name = "Pháp", Offset = 2 * 3600}, -- +02 CEST
-    {Name = "Brazil", Offset = -2 * 3600}, -- -02 BRT
-    {Name = "Ấn Độ", Offset = 5.5 * 3600}, -- +05:30 IST
-    {Name = "Úc (Sydney)", Offset = 10 * 3600}, -- +10 AEST
-    {Name = "Canada (Eastern)", Offset = -3 * 3600} -- -03 EDT
-}
-local selectedTimeZone = timeZones[1] -- Mặc định: Việt Nam (Đắk Lắk/Sài Gòn)
-
--- Hiển thị thời gian thực và thời gian treo
+-- Hiển thị thời gian treo
 local startTime = os.time()
 local function setupTimeDisplay()
     local screenGui = Instance.new("ScreenGui", PlayerGui)
     screenGui.Name = "TimeDisplayGui"
     screenGui.IgnoreGuiInset = true
 
-    -- Thời gian thực
-    local timeLabel = Instance.new("TextLabel", screenGui)
-    timeLabel.Size = UDim2.new(0, 200, 0, 30)
-    timeLabel.Position = UDim2.new(1, -210, 0, 10)
-    timeLabel.BackgroundTransparency = 0.5
-    timeLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    timeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    timeLabel.TextScaled = true
-    timeLabel.Text = "Thời gian " .. selectedTimeZone.Name .. ": Đang tải..."
-    timeLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
-    timeLabel.BorderSizePixel = 2
-
     -- Thời gian treo
     local afkLabel = Instance.new("TextLabel", screenGui)
     afkLabel.Size = UDim2.new(0, 200, 0, 30)
-    afkLabel.Position = UDim2.new(1, -210, 0, 50)
+    afkLabel.Position = UDim2.new(1, -210, 0, 10)
     afkLabel.BackgroundTransparency = 0.5
     afkLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     afkLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -237,58 +210,8 @@ local function setupTimeDisplay()
     afkLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
     afkLabel.BorderSizePixel = 2
 
-    -- Dropdown chọn quốc gia
-    local dropdownFrame = Instance.new("Frame", screenGui)
-    dropdownFrame.Size = UDim2.new(0, 200, 0, 30)
-    dropdownFrame.Position = UDim2.new(1, -210, 0, 90)
-    dropdownFrame.BackgroundTransparency = 0.5
-    dropdownFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    dropdownFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
-    dropdownFrame.BorderSizePixel = 2
-
-    local dropdownButton = Instance.new("TextButton", dropdownFrame)
-    dropdownButton.Size = UDim2.new(1, 0, 1, 0)
-    dropdownButton.BackgroundTransparency = 1
-    dropdownButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    dropdownButton.TextScaled = true
-    dropdownButton.Text = "Chọn quốc gia: " .. selectedTimeZone.Name
-
-    local dropdownList = Instance.new("Frame", screenGui)
-    dropdownList.Size = UDim2.new(0, 200, 0, #timeZones * 30)
-    dropdownList.Position = UDim2.new(1, -210, 0, 120)
-    dropdownList.BackgroundTransparency = 0.5
-    dropdownList.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    dropdownList.BorderColor3 = Color3.fromRGB(255, 0, 0)
-    dropdownList.BorderSizePixel = 2
-    dropdownList.Visible = false
-
-    for i, tz in ipairs(timeZones) do
-        local tzButton = Instance.new("TextButton", dropdownList)
-        tzButton.Size = UDim2.new(1, 0, 0, 30)
-        tzButton.Position = UDim2.new(0, 0, 0, (i-1)*30)
-        tzButton.BackgroundTransparency = 1
-        tzButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        tzButton.TextScaled = true
-        tzButton.Text = tz.Name
-        tzButton.MouseButton1Click:Connect(function()
-            selectedTimeZone = tz
-            dropdownButton.Text = "Chọn quốc gia: " .. tz.Name
-            dropdownList.Visible = false
-        end)
-    end
-
-    dropdownButton.MouseButton1Click:Connect(function()
-        dropdownList.Visible = not dropdownList.Visible
-    end)
-
-    -- Cập nhật thời gian
+    -- Cập nhật thời gian treo
     RunService.Heartbeat:Connect(function()
-        -- Thời gian thực
-        local currentTime = os.time() + selectedTimeZone.Offset
-        local timeString = os.date("%H:%M:%S", currentTime)
-        timeLabel.Text = "Thời gian " .. selectedTimeZone.Name .. ": " .. timeString
-
-        -- Thời gian treo
         local elapsed = os.time() - startTime
         local hours = math.floor(elapsed / 3600)
         local minutes = math.floor((elapsed % 3600) / 60)
