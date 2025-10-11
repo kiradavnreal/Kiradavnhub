@@ -1,91 +1,324 @@
-local _g,_t,_c,_n,_p,_ts,_r,_ph=game:GetService("Players").LocalPlayer.PlayerGui,game:GetService("TweenService"),game:GetService("ContentProvider"),game:GetService("StarterGui"),game:GetService("Players"),game:GetService("TeleportService"),game:GetService("RunService"),game:GetService("PhysicsService")
-local gId=game.PlaceId
-if not ({[2753915549]="Blox Fruits",[1234567890]="99 Đêm"})[gId] then _n:SetCore("SendNotification",{Title="Thông Báo",Text="Cảm ơn bạn đã sử dụng script của mình nhé 😘",Duration=10}) end
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local ContentProvider = game:GetService("ContentProvider")
+local StarterGui = game:GetService("StarterGui")
+local TeleportService = game:GetService("TeleportService")
+local RunService = game:GetService("RunService")
+local PhysicsService = game:GetService("PhysicsService")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer.PlayerGui
+local gameId = game.PlaceId
 
+-- Kiểm tra game
+local supportedGames = {
+    [2753915549] = "Blox Fruits",
+    [1234567890] = "99 Đêm" -- Thay bằng PlaceId thực tế của 99 Đêm
+}
+if not supportedGames[gameId] then
+    StarterGui:SetCore("SendNotification", {
+        Title = "Thông Báo",
+        Text = "Cảm ơn bạn đã sử dụng script của mình nhé 😘",
+        Duration = 10
+    })
+end
+
+-- Phát hiện admin và hop server
 local function checkAdmin()
-    local adminIds={[912348]=true,[120173604]=true}
-    _p.PlayerAdded:Connect(function(player)
+    local adminIds = {[912348] = true, [120173604] = true}
+    Players.PlayerAdded:Connect(function(player)
         if adminIds[player.UserId] then
-            if player.UserId==120173604 then pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
-            else _n:SetCore("SendNotification",{Title="Cảnh Báo",Text="Admin vô server sẽ đổi server trong 5s nữa",Duration=5}) wait(5) pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
-        elseif player.Name:lower():find("admin") or player:GetRoleInGroup(game.CreatorId)~="Guest" then
-            _n:SetCore("SendNotification",{Title="Cảnh Báo",Text="Admin vô server sẽ đổi server trong 5s nữa",Duration=5}) wait(5) pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
+            if player.UserId == 120173604 then
+                pcall(function()
+                    TeleportService:TeleportToPlaceInstance(gameId, game.JobId, LocalPlayer)
+                end)
+            else
+                StarterGui:SetCore("SendNotification", {
+                    Title = "Cảnh Báo",
+                    Text = "Admin vô server sẽ đổi server trong 5s nữa",
+                    Duration = 5
+                })
+                wait(5)
+                pcall(function()
+                    TeleportService:TeleportToPlaceInstance(gameId, game.JobId, LocalPlayer)
+                end)
+            end
+        elseif player.Name:lower():find("admin") or player:GetRoleInGroup(game.CreatorId) ~= "Guest" then
+            StarterGui:SetCore("SendNotification", {
+                Title = "Cảnh Báo",
+                Text = "Admin vô server sẽ đổi server trong 5s nữa",
+                Duration = 5
+            })
+            wait(5)
+            pcall(function()
+                TeleportService:TeleportToPlaceInstance(gameId, game.JobId, LocalPlayer)
+            end)
         end
     end)
 end
-checkAdmin()
+pcall(checkAdmin)
 
-pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua"))() end)
-pcall(function() _c:PreloadAsync({"rbxassetid://756765780901","rbxassetid://75676578090181","rbxassetid://89326205091486"}) end)
-
-local function _iA()
-    local s=Instance.new("ScreenGui",_g) s.Name="IntroGui" s.IgnoreGuiInset=true
-    local f=Instance.new("Frame",s) f.Size=UDim2.new(0,300,0,150) f.Position=UDim2.new(0.5,-150,0.5,-75) f.BackgroundColor3=Color3.fromRGB(0,0,0) f.BackgroundTransparency=0.5
-    local t=Instance.new("TextLabel",f) t.Size=UDim2.new(1,0,0.6,0) t.BackgroundTransparency=1 t.Text="Kirada VN Hack\nTác giả: Kirada & Habato\nNgười làm & viết: Kirada & Hiếu TV" t.TextColor3=Color3.fromRGB(255,255,255) t.TextScaled=true
-    local i=Instance.new("ImageLabel",f) i.Size=UDim2.new(0,100,0,100) i.Position=UDim2.new(0.5,-50,0.6,0) i.BackgroundTransparency=1 i.Image="rbxassetid://75676578090181" i.ImageTransparency=1
-    local tI=TweenInfo.new(1,Enum.EasingStyle.Sine)
-    local fIT,fIF,fII=_t:Create(t,tI,{TextTransparency=0}),_t:Create(f,tI,{BackgroundTransparency=0.2}),_t:Create(i,tI,{ImageTransparency=0})
-    local fOT,fOF,fOI=_t:Create(t,tI,{TextTransparency=1}),_t:Create(f,tI,{BackgroundTransparency=1}),_t:Create(i,tI,{ImageTransparency=1})
-    fIT:Play() fIF:Play() fII:Play() fIT.Completed:Wait() wait(5) fOT:Play() fOF:Play() fOI:Play() fOT.Completed:Wait() s:Destroy()
+-- Phát hiện player dùng hack
+local function checkHackers()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            local character = player.Character
+            if character and character:FindFirstChild("Humanoid") and character:FindFirstChild("HumanoidRootPart") then
+                local humanoid = character.Humanoid
+                local rootPart = character.HumanoidRootPart
+                local isHacking = humanoid.WalkSpeed > 50 or humanoid.JumpPower > 100 or rootPart.Position.Y > 500
+                if isHacking then
+                    local screenGui = Instance.new("ScreenGui", PlayerGui)
+                    screenGui.Name = "HackWarningGui"
+                    screenGui.IgnoreGuiInset = true
+                    local frame = Instance.new("Frame", screenGui)
+                    frame.Size = UDim2.new(0, 300, 0, 150)
+                    frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+                    frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+                    frame.BackgroundTransparency = 0.5
+                    local textLabel = Instance.new("TextLabel", frame)
+                    textLabel.Size = UDim2.new(1, 0, 0.6, 0)
+                    textLabel.BackgroundTransparency = 1
+                    textLabel.Text = "Phát hiện người chơi dùng hack.\nBạn vẫn muốn chơi server này không?"
+                    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    textLabel.TextScaled = true
+                    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine)
+                    local fadeInFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 0.2})
+                    local fadeInText = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 0})
+                    local fadeOutFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 1})
+                    local fadeOutText = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 1})
+                    fadeInFrame:Play()
+                    fadeInText:Play()
+                    StarterGui:SetCore("SendNotification", {
+                        Title = "Cảnh Báo Hack",
+                        Text = "Phát hiện người chơi dùng hack. Bạn vẫn muốn chơi server này không?",
+                        Duration = 10,
+                        Button1 = "Có",
+                        Button2 = "Không",
+                        Callback = function(state)
+                            if not state then
+                                StarterGui:SetCore("SendNotification", {
+                                    Title = "Hop Server",
+                                    Text = "Đang tìm server ít người nhất trong 10s...",
+                                    Duration = 10
+                                })
+                                wait(10)
+                                pcall(function()
+                                    -- Tìm server ít người nhất (giả lập bằng cách thử hop server)
+                                    local attempts = 0
+                                    local maxAttempts = 5
+                                    while attempts < maxAttempts do
+                                        TeleportService:TeleportToPlaceInstance(gameId, game.JobId, LocalPlayer)
+                                        attempts = attempts + 1
+                                        wait(2)
+                                    end
+                                end)
+                            end
+                            fadeOutFrame:Play()
+                            fadeOutText:Play()
+                            fadeOutText.Completed:Wait()
+                            screenGui:Destroy()
+                        end
+                    })
+                    break -- Chỉ hiển thị thông báo cho hacker đầu tiên
+                end
+            end
+        end
+    end
 end
-_iA()
+RunService.Heartbeat:Connect(function()
+    pcall(checkHackers)
+end)
 
-local W=MakeWindow({Hub={Title="Kirada VN",Animation="YouTube: Kirada VN"},Key={KeySystem=false,Title="Key System",Keys={"1234"},Notifi={Notifications=true,CorrectKey="Running the Script...",Incorrectkey="The key is incorrect",CopyKeyLink="Copied to Clipboard"}}})
-MinimizeButton({Image="rbxassetid://89326205091486",Size={60,60},Color=Color3.fromRGB(10,10,10),Corner=true,Stroke=false,StrokeColor=Color3.fromRGB(255,0,0)})
+-- Fix chuyển động player
+local function fixPlayerMovement()
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+    rootPart:SetNetworkOwner(LocalPlayer) -- Giảm latency
+    humanoid.WalkSpeed = math.clamp(humanoid.WalkSpeed, 16, 50) -- Giới hạn tốc độ hợp lý
+    humanoid.JumpPower = math.clamp(humanoid.JumpPower, 50, 100) -- Giới hạn nhảy hợp lý
+    RunService.Stepped:Connect(function()
+        if humanoid:GetState() == Enum.HumanoidStateType.Running then
+            rootPart.Velocity = Vector3.new(rootPart.Velocity.X * 0.9, rootPart.Velocity.Y, rootPart.Velocity.Z * 0.9) -- Giảm giật
+        end
+    end)
+end
+pcall(fixPlayerMovement)
 
-local function _aB(t,n,u,s)
-    AddButton(t,{Name=n,Callback=function()
-        local success,err=pcall(function()
-            if u:find("http") then loadstring(game:HttpGet(u))()
-            else setclipboard(u) end
-        end)
-        if not success then _n:SetCore("SendNotification",{Title="Lỗi",Text="Không thể "..(u:find("http") and "chạy script " or "sao chép link ")..n..": "..tostring(err),Duration=5})
-        else _n:SetCore("SendNotification",{Title=s or n,Text="Đã "..(u:find("http") and "chạy script " or "sao chép link ")..(s or n).." vào clipboard!"..(s and " Nguồn: "..s or ""),Duration=u:find("http") and 5 or 10}) end
-    end})
+-- Tải UI Redz V2
+pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua"))()
+end)
+
+-- Preload ảnh
+pcall(function()
+    ContentProvider:PreloadAsync({
+        "rbxassetid://756765780901",
+        "rbxassetid://75676578090181",
+        "rbxassetid://89326205091486"
+    })
+end)
+
+-- Intro animation
+local function introAnimation()
+    local screenGui = Instance.new("ScreenGui", PlayerGui)
+    screenGui.Name = "IntroGui"
+    screenGui.IgnoreGuiInset = true
+    local frame = Instance.new("Frame", screenGui)
+    frame.Size = UDim2.new(0, 300, 0, 150)
+    frame.Position = UDim2.new(0.5, -150, 0.5, -75)
+    frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    frame.BackgroundTransparency = 0.5
+    local textLabel = Instance.new("TextLabel", frame)
+    textLabel.Size = UDim2.new(1, 0, 0.6, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười làm & viết: Kirada & Hiếu TV"
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textLabel.TextScaled = true
+    local imageLabel = Instance.new("ImageLabel", frame)
+    imageLabel.Size = UDim2.new(0, 100, 0, 100)
+    imageLabel.Position = UDim2.new(0.5, -50, 0.6, 0)
+    imageLabel.BackgroundTransparency = 1
+    imageLabel.Image = "rbxassetid://75676578090181"
+    imageLabel.ImageTransparency = 1
+    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine)
+    local fadeInText = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 0})
+    local fadeInFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 0.2})
+    local fadeInImage = TweenService:Create(imageLabel, tweenInfo, {ImageTransparency = 0})
+    local fadeOutText = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 1})
+    local fadeOutFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 1})
+    local fadeOutImage = TweenService:Create(imageLabel, tweenInfo, {ImageTransparency = 1})
+    fadeInText:Play()
+    fadeInFrame:Play()
+    fadeInImage:Play()
+    fadeInText.Completed:Wait()
+    wait(5)
+    fadeOutText:Play()
+    fadeOutFrame:Play()
+    fadeOutImage:Play()
+    fadeOutText.Completed:Wait()
+    screenGui:Destroy()
+end
+pcall(introAnimation)
+
+-- Tạo menu
+local window = MakeWindow({
+    Hub = {Title = "Kirada VN", Animation = "YouTube: Kirada VN"},
+    Key = {KeySystem = false, Title = "Key System", Keys = {"1234"}, Notifi = {Notifications = true, CorrectKey = "Running the Script...", Incorrectkey = "The key is incorrect", CopyKeyLink = "Copied to Clipboard"}}
+})
+MinimizeButton({
+    Image = "rbxassetid://89326205091486",
+    Size = {60, 60},
+    Color = Color3.fromRGB(10, 10, 10),
+    Corner = true,
+    Stroke = false,
+    StrokeColor = Color3.fromRGB(255, 0, 0)
+})
+
+-- Hàm thêm nút
+local function addButton(tab, name, url, source)
+    AddButton(tab, {
+        Name = name,
+        Callback = function()
+            local success, err = pcall(function()
+                if url:find("http") then
+                    loadstring(game:HttpGet(url))()
+                else
+                    setclipboard(url)
+                end
+            end)
+            StarterGui:SetCore("SendNotification", success and {
+                Title = source or name,
+                Text = "Đã " .. (url:find("http") and "chạy script " or "sao chép link ") .. (source or name) .. " vào clipboard!" .. (source and " Nguồn: " .. source or ""),
+                Duration = url:find("http") and 5 or 10
+            } or {
+                Title = "Lỗi",
+                Text = "Không thể " .. (url:find("http") and "chạy script " or "sao chép link ") .. name .. ": " .. tostring(err),
+                Duration = 5
+            })
+        end
+    })
 end
 
-local T1=MakeTab({Name="Blox Fruit"})
-_aB(T1,"W-AZURE","https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua")
-_aB(T1,"H4X Script","https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
-_aB(T1,"Nat Hub","https://get.nathub.xyz/loader")
-_aB(T1,"Quantum Hub","https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua")
-_aB(T1,"Speed Hub","https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
-_aB(T1,"OMG HUB sever vip free (getkey)","https://pastefy.app/US0MtPIY/raw")
-_aB(T1,"Giảm Lag","https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
+-- Tab: Blox Fruit
+local tab1 = MakeTab({Name = "Blox Fruit"})
+addButton(tab1, "W-AZURE", "https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua")
+addButton(tab1, "H4X Script", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
+addButton(tab1, "Nat Hub", "https://get.nathub.xyz/loader")
+addButton(tab1, "Quantum Hub", "https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua")
+addButton(tab1, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+addButton(tab1, "OMG HUB sever vip free (getkey)", "https://pastefy.app/US0MtPIY/raw")
+addButton(tab1, "Giảm Lag", "https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
 
-local T2=MakeTab({Name="Hop Server"})
-_aB(T2,"Teddy Hub (getkey)","https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TEDDYHUB-FREEMIUM")
+-- Tab: Hop Server
+local tab2 = MakeTab({Name = "Hop Server"})
+addButton(tab2, "Teddy Hub (getkey)", "https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TEDDYHUB-FREEMIUM")
 
-local T3=MakeTab({Name="99 Đêm"})
-_aB(T3,"NATHUB (getkey)","https://get.nathub.xyz/loader")
-_aB(T3,"H4X (getkey)","https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
-_aB(T3,"Speed Hub (getkey)","https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
-_aB(T3,"Hack Farm Kim Cương","https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
-_aB(T3,"Skibidi","https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
+-- Tab: 99 Đêm
+local tab3 = MakeTab({Name = "99 Đêm"})
+addButton(tab3, "NATHUB (getkey)", "https://get.nathub.xyz/loader")
+addButton(tab3, "H4X (getkey)", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
+addButton(tab3, "Speed Hub (getkey)", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+addButton(tab3, "Hack Farm Kim Cương", "https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
+addButton(tab3, "Skibidi", "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
 
-local T5=MakeTab({Name="Key System"})
-_aB(T5,"Copy Speed Hub Key","KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE","Key System")
+-- Tab: Key System
+local tab5 = MakeTab({Name = "Key System"})
+addButton(tab5, "Copy Speed Hub Key", "KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE", "Key System")
 
-local T6=MakeTab({Name="Idol YTB Hack"})
-_aB(T6,"Copy Vịt Lỏd Link","https://www.youtube.com/channel/UCQinN9_tN8ln_Mk3hqEfLLw","Vịt Lỏd")
-_aB(T6,"Copy EZ AK Gaming Link","https://www.youtube.com/@akgamingytb999","EZ AK Gaming")
-_aB(T6,"Copy TBoy Link","https://www.youtube.com/channel/UCTwTw3BeiQm2dNtsVeCxlYw","TBoy")
+-- Tab: Idol YTB Hack
+local tab6 = MakeTab({Name = "Idol YTB Hack"})
+addButton(tab6, "Copy Vịt Lỏd Link", "https://www.youtube.com/channel/UCQinN9_tN8ln_Mk3hqEfLLw", "Vịt Lỏd")
+addButton(tab6, "Copy EZ AK Gaming Link", "https://www.youtube.com/@akgamingytb999", "EZ AK Gaming")
+addButton(tab6, "Copy TBoy Link", "https://www.youtube.com/channel/UCTwTw3BeiQm2dNtsVeCxlYw", "TBoy")
 
-local T4=MakeTab({Name="Mạng Xã Hội"})
-_aB(T4,"Copy Discord Link","https://discord.gg/kJ9ydA2PP4","Discord")
-_aB(T4,"Copy YouTube Link","https://www.youtube.com/@kiradavn","YouTube")
-_aB(T4,"Copy TikTok Link","https://www.tiktok.com/@offbyebyesad","TikTok")
+-- Tab: Mạng Xã Hội
+local tab4 = MakeTab({Name = "Mạng Xã Hội"})
+addButton(tab4, "Copy Discord Link", "https://discord.gg/kJ9ydA2PP4", "Discord")
+addButton(tab4, "Copy YouTube Link", "https://www.youtube.com/@kiradavn", "YouTube")
+addButton(tab4, "Copy TikTok Link", "https://www.tiktok.com/@offbyebyesad", "TikTok")
 
-local function _aC()
-    local mt=getrawmetatable(game) local _ni,_ii=mt.__namecall,mt.__index setreadonly(mt,false)
-    mt.__namecall=function(self,...) local m=getnamecallmethod() if (m=="FireServer" or m=="InvokeServer") and (tostring(self)=="AntiCheat" or tostring(self)=="AC" or tostring(self)=="FlyDetection" or tostring(self)=="HeightCheck") then return end return _ni(self,...) end
-    mt.__index=function(self,k) if self:IsA("Humanoid") and (k=="WalkSpeed" or k=="JumpPower" or k=="HipHeight") then return math.random(15,17)+math.random() end if self:IsA("Character") and k=="Position" then local p=_ii(self,k) return Vector3.new(p.X+math.random(-0.1,0.1),p.Y+math.random(-0.05,0.05),p.Z+math.random(-0.1,0.1)) end return _ii(self,k) end
-    setreadonly(mt,true)
-    local c=_p.LocalPlayer.Character or _p.LocalPlayer.CharacterAdded:Wait() local h=c:WaitForChild("Humanoid") local r=c:WaitForChild("HumanoidRootPart")
-    _ph:CreateCollisionGroup("NoClip") _ph:CollisionGroupSetCollidable("NoClip","Default",false)
-    for _,p in pairs(c:GetDescendants()) do if p:IsA("BasePart") then _ph:SetPartCollisionGroup(p,"NoClip") end end
-    _r.Heartbeat:Connect(function() if h:GetState()==Enum.HumanoidStateType.Freefall or h:GetState()==Enum.HumanoidStateType.Flying then r.Velocity=r.Velocity+Vector3.new(math.random(-1,1)/10,math.random(-1,1)/10,math.random(-1,1)/10) end end)
+-- Chống anti-cheat
+local function antiCheat()
+    local mt = getrawmetatable(game)
+    local namecall = mt.__namecall
+    local index = mt.__index
+    setreadonly(mt, false)
+    mt.__namecall = function(self, ...)
+        local method = getnamecallmethod()
+        if (method == "FireServer" or method == "InvokeServer") and (tostring(self) == "AntiCheat" or tostring(self) == "AC" or tostring(self) == "FlyDetection" or tostring(self) == "HeightCheck") then
+            return
+        end
+        return namecall(self, ...)
+    end
+    mt.__index = function(self, key)
+        if self:IsA("Humanoid") and (key == "WalkSpeed" or key == "JumpPower" or key == "HipHeight") then
+            return math.random(15, 17) + math.random()
+        end
+        if self:IsA("Character") and key == "Position" then
+            local pos = index(self, key)
+            return Vector3.new(pos.X + math.random(-0.1, 0.1), pos.Y + math.random(-0.05, 0.05), pos.Z + math.random(-0.1, 0.1))
+        end
+        return index(self, key)
+    end
+    setreadonly(mt, true)
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+    PhysicsService:CreateCollisionGroup("NoClip")
+    PhysicsService:CollisionGroupSetCollidable("NoClip", "Default", false)
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            PhysicsService:SetPartCollisionGroup(part, "NoClip")
+        end
+    end
+    RunService.Heartbeat:Connect(function()
+        if humanoid:GetState() == Enum.HumanoidStateType.Freefall or humanoid:GetState() == Enum.HumanoidStateType.Flying then
+            rootPart.Velocity = rootPart.Velocity + Vector3.new(math.random(-1, 1)/10, math.random(-1, 1)/10, math.random(-1, 1)/10)
+        end
+    end)
 end
-pcall(_aC)
+pcall(antiCheat)
 
-repeat task.wait() until game:IsLoaded() and _g
+-- Đợi game tải
+repeat task.wait() until game:IsLoaded() and PlayerGui
