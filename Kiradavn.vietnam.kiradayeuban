@@ -5,7 +5,6 @@ local StarterGui = game:GetService("StarterGui")
 local TeleportService = game:GetService("TeleportService")
 local RunService = game:GetService("RunService")
 local PhysicsService = game:GetService("PhysicsService")
-local SoundService = game:GetService("SoundService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer.PlayerGui
 local gameId = game.PlaceId
@@ -128,14 +127,6 @@ MinimizeButton({
     StrokeColor = Color3.fromRGB(255, 0, 0)
 })
 
--- Danh sách script đã chạy
-local executedScripts = {}
-local autoRunEnabled = false
-local showScriptsEnabled = false
-local isMuted = false
-local autoRunConnection
-local showScriptsConnection
-
 -- Hàm thêm nút
 local function addButton(tab, name, url, source)
     AddButton(tab, {
@@ -144,7 +135,6 @@ local function addButton(tab, name, url, source)
             local success, err = pcall(function()
                 if url:find("http") then
                     loadstring(game:HttpGet(url))()
-                    table.insert(executedScripts, name .. (source and " (" .. source .. ")" or ""))
                 else
                     setclipboard(url)
                 end
@@ -156,25 +146,6 @@ local function addButton(tab, name, url, source)
             } or {
                 Title = "Lỗi",
                 Text = "Không thể " .. (url:find("http") and "chạy script " or "sao chép link ") .. name .. ": " .. tostring(err),
-                Duration = 5
-            })
-        end
-    })
-end
-
--- Hàm thêm toggle (mô phỏng nếu UI Redz V2 không hỗ trợ AddToggle)
-local function addToggle(tab, name, default, callback)
-    local toggleState = default
-    AddButton(tab, {
-        Name = name .. (toggleState and ": On" or ": Off"),
-        Callback = function()
-            toggleState = not toggleState
-            callback(toggleState)
-            -- Cập nhật tên nút (giả lập toggle)
-            tab:FindFirstChild(name).Name = name .. (toggleState and ": On" or ": Off")
-            StarterGui:SetCore("SendNotification", {
-                Title = name,
-                Text = toggleState and "Đã bật " .. name or "Đã tắt " .. name,
                 Duration = 5
             })
         end
@@ -213,90 +184,59 @@ addButton(tab6, "Copy Vịt Lỏd Link", "https://www.youtube.com/channel/UCQinN
 addButton(tab6, "Copy EZ AK Gaming Link", "https://www.youtube.com/@akgamingytb999", "EZ AK Gaming")
 addButton(tab6, "Copy TBoy Link", "https://www.youtube.com/channel/UCTwTw3BeiQm2dNtsVeCxlYw", "TBoy")
 
--- Tab: Cài Đặt
-local tab7 = MakeTab({Name = "Cài Đặt"})
-addToggle(tab7, "Tự Chạy Tất Cả Script", false, function(state)
-    autoRunEnabled = state
-    if autoRunEnabled then
-        autoRunConnection = RunService.Heartbeat:Connect(function()
-            local scripts = {
-                {"W-AZURE", "https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua"},
-                {"H4X Script", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua"},
-                {"Nat Hub", "https://get.nathub.xyz/loader"},
-                {"Quantum Hub", "https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"},
-                {"Speed Hub", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua"},
-                {"OMG HUB sever vip free (getkey)", "https://pastefy.app/US0MtPIY/raw"},
-                {"Giảm Lag", "https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua"},
-                {"Teddy Hub (getkey)", "https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TEDDYHUB-FREEMIUM"},
-                {"NATHUB (getkey)", "https://get.nathub.xyz/loader"},
-                {"H4X (getkey)", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua"},
-                {"Speed Hub (getkey)", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua"},
-                {"Hack Farm Kim Cương", "https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua"},
-                {"Skibidi", "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua"}
-            }
-            for _, script in ipairs(scripts) do
-                local success, err = pcall(function()
-                    loadstring(game:HttpGet(script[2]))()
-                    table.insert(executedScripts, script[1])
-                end)
-                StarterGui:SetCore("SendNotification", success and {
-                    Title = "Tự Chạy Script",
-                    Text = "Đã chạy script " .. script[1] .. " thành công!",
-                    Duration = 5
-                } or {
-                    Title = "Lỗi",
-                    Text = "Không thể chạy script " .. script[1] .. ": " .. tostring(err),
-                    Duration = 5
-                })
-                wait(1) -- Đợi để tránh quá tải
-            end
-            wait(60) -- Chu kỳ chạy lại sau 60s
-        end)
-    else
-        if autoRunConnection then
-            autoRunConnection:Disconnect()
-        end
-    end
-end)
-addToggle(tab7, "Xem Script Đã Chạy", false, function(state)
-    showScriptsEnabled = state
-    if showScriptsEnabled then
-        showScriptsConnection = RunService.Heartbeat:Connect(function()
-            local scriptList = #executedScripts > 0 and table.concat(executedScripts, "\n") or "Chưa chạy script nào!"
-            StarterGui:SetCore("SendNotification", {
-                Title = "Script Đã Chạy",
-                Text = scriptList,
-                Duration = 10
-            })
-            wait(30) -- Hiển thị lại sau 30s
-        end)
-    else
-        if showScriptsConnection then
-            showScriptsConnection:Disconnect()
-        end
-        local scriptList = #executedScripts > 0 and table.concat(executedScripts, "\n") or "Chưa chạy script nào!"
-        StarterGui:SetCore("SendNotification", {
-            Title = "Script Đã Chạy",
-            Text = scriptList,
-            Duration = 10
-        })
-    end
-end)
-addToggle(tab7, "Tắt/Bật Âm Thanh", false, function(state)
-    isMuted = state
-    SoundService.Volume = isMuted and 0 or 0.5
-    StarterGui:SetCore("SendNotification", {
-        Title = "Âm Thanh",
-        Text = isMuted and "Đã tắt âm thanh game!" or "Đã bật âm thanh game!",
-        Duration = 5
-    })
-end)
-
 -- Tab: Mạng Xã Hội
 local tab4 = MakeTab({Name = "Mạng Xã Hội"})
 addButton(tab4, "Copy Discord Link", "https://discord.gg/kJ9ydA2PP4", "Discord")
 addButton(tab4, "Copy YouTube Link", "https://www.youtube.com/@kiradavn", "YouTube")
 addButton(tab4, "Copy TikTok Link", "https://www.tiktok.com/@offbyebyesad", "TikTok")
+
+-- Hiển thị thời gian thực và thời gian treo
+local startTime = os.time()
+local function setupTimeDisplay()
+    local screenGui = Instance.new("ScreenGui", PlayerGui)
+    screenGui.Name = "TimeDisplayGui"
+    screenGui.IgnoreGuiInset = true
+
+    -- Thời gian thực
+    local timeLabel = Instance.new("TextLabel", screenGui)
+    timeLabel.Size = UDim2.new(0, 200, 0, 30)
+    timeLabel.Position = UDim2.new(1, -210, 0, 10)
+    timeLabel.BackgroundTransparency = 0.5
+    timeLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    timeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    timeLabel.TextScaled = true
+    timeLabel.Text = "Thời gian: Đang tải..."
+    timeLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
+    timeLabel.BorderSizePixel = 2
+
+    -- Thời gian treo
+    local afkLabel = Instance.new("TextLabel", screenGui)
+    afkLabel.Size = UDim2.new(0, 200, 0, 30)
+    afkLabel.Position = UDim2.new(1, -210, 0, 50)
+    afkLabel.BackgroundTransparency = 0.5
+    afkLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    afkLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    afkLabel.TextScaled = true
+    afkLabel.Text = "Thời gian treo: Đang tải..."
+    afkLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
+    afkLabel.BorderSizePixel = 2
+
+    -- Cập nhật thời gian
+    RunService.Heartbeat:Connect(function()
+        -- Thời gian thực (+07)
+        local currentTime = os.time() + 7 * 3600 -- Điều chỉnh múi giờ +07
+        local timeString = os.date("%H:%M:%S", currentTime)
+        timeLabel.Text = "Thời gian: " .. timeString
+
+        -- Thời gian treo
+        local elapsed = os.time() - startTime
+        local hours = math.floor(elapsed / 3600)
+        local minutes = math.floor((elapsed % 3600) / 60)
+        local seconds = elapsed % 60
+        afkLabel.Text = string.format("Thời gian treo: %d giờ %d phút %d giây", hours, minutes, seconds)
+    end)
+end
+pcall(setupTimeDisplay)
 
 -- Chống anti-cheat
 local function antiCheat()
