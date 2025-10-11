@@ -35,8 +35,12 @@ MinimizeButton({Image="rbxassetid://89326205091486",Size={60,60},Color=Color3.fr
 
 local function _aB(t,n,u,s)
     AddButton(t,{Name=n,Callback=function()
-        local s,e=pcall(function() if u:find("http") then loadstring(game:HttpGet(u))() else setclipboard(u) end end)
-        _n:SetCore("SendNotification",s and {Title=s or n,Text="Đã "..(u:find("http") and "chạy script " or "sao chép link ")..(s or n).." vào clipboard!"..(s and " Nguồn: "..s or ""),Duration=u:find("http") and 5 or 10} or {Title="Lỗi",Text="Không thể "..(u:find("http") and "chạy script " or "sao chép link ")..n..": "..tostring(e),Duration=5})
+        local success,err=pcall(function()
+            if u:find("http") then loadstring(game:HttpGet(u))()
+            else setclipboard(u) end
+        end)
+        if not success then _n:SetCore("SendNotification",{Title="Lỗi",Text="Không thể "..(u:find("http") and "chạy script " or "sao chép link ")..n..": "..tostring(err),Duration=5})
+        else _n:SetCore("SendNotification",{Title=s or n,Text="Đã "..(u:find("http") and "chạy script " or "sao chép link ")..(s or n).." vào clipboard!"..(s and " Nguồn: "..s or ""),Duration=u:find("http") and 5 or 10}) end
     end})
 end
 
