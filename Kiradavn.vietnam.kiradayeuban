@@ -1,23 +1,15 @@
 local _g,_t,_c,_n,_p,_ts,_r,_ph=game:GetService("Players").LocalPlayer.PlayerGui,game:GetService("TweenService"),game:GetService("ContentProvider"),game:GetService("StarterGui"),game:GetService("Players"),game:GetService("TeleportService"),game:GetService("RunService"),game:GetService("PhysicsService")
 local gId=game.PlaceId
-local sG={[2753915549]="Blox Fruits",[1234567890]="99 Đêm"}
-if not sG[gId] then _n:SetCore("SendNotification",{Title="Thông Báo",Text="Cảm ơn bạn đã sử dụng script của mình nhé 😘",Duration=10}) end
+if not ({[2753915549]="Blox Fruits",[1234567890]="99 Đêm"})[gId] then _n:SetCore("SendNotification",{Title="Thông Báo",Text="Cảm ơn bạn đã sử dụng script của mình nhé 😘",Duration=10}) end
 
 local function checkAdmin()
     local adminIds={[912348]=true,[120173604]=true}
     _p.PlayerAdded:Connect(function(player)
         if adminIds[player.UserId] then
-            if player.UserId==120173604 then
-                pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
-            else
-                _n:SetCore("SendNotification",{Title="Cảnh Báo",Text="Admin vô server sẽ đổi server trong 5s nữa",Duration=5})
-                wait(5)
-                pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
-            end
+            if player.UserId==120173604 then pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
+            else _n:SetCore("SendNotification",{Title="Cảnh Báo",Text="Admin vô server sẽ đổi server trong 5s nữa",Duration=5}) wait(5) pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
         elseif player.Name:lower():find("admin") or player:GetRoleInGroup(game.CreatorId)~="Guest" then
-            _n:SetCore("SendNotification",{Title="Cảnh Báo",Text="Admin vô server sẽ đổi server trong 5s nữa",Duration=5})
-            wait(5)
-            pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
+            _n:SetCore("SendNotification",{Title="Cảnh Báo",Text="Admin vô server sẽ đổi server trong 5s nữa",Duration=5}) wait(5) pcall(function() _ts:TeleportToPlaceInstance(gId,game.JobId,_p.LocalPlayer) end)
         end
     end)
 end
@@ -27,39 +19,14 @@ pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/dauc
 pcall(function() _c:PreloadAsync({"rbxassetid://756765780901","rbxassetid://75676578090181","rbxassetid://89326205091486"}) end)
 
 local function _iA()
-    local s=Instance.new("ScreenGui",_g)
-    s.Name="IntroGui"
-    s.IgnoreGuiInset=true
-    local f=Instance.new("Frame",s)
-    f.Size=UDim2.new(0,300,0,150)
-    f.Position=UDim2.new(0.5,-150,0.5,-75)
-    f.BackgroundColor3=Color3.fromRGB(0,0,0)
-    f.BackgroundTransparency=0.5
-    local t=Instance.new("TextLabel",f)
-    t.Size=UDim2.new(1,0,0.6,0)
-    t.BackgroundTransparency=1
-    t.Text="Kirada VN Hack\nTác giả: Kirada & Habato\nNgười làm & viết: Kirada & Hiếu TV"
-    t.TextColor3=Color3.fromRGB(255,255,255)
-    t.TextScaled=true
-    local i=Instance.new("ImageLabel",f)
-    i.Size=UDim2.new(0,100,0,100)
-    i.Position=UDim2.new(0.5,-50,0.6,0)
-    i.BackgroundTransparency=1
-    i.Image="rbxassetid://75676578090181"
-    i.ImageTransparency=1
+    local s=Instance.new("ScreenGui",_g) s.Name="IntroGui" s.IgnoreGuiInset=true
+    local f=Instance.new("Frame",s) f.Size=UDim2.new(0,300,0,150) f.Position=UDim2.new(0.5,-150,0.5,-75) f.BackgroundColor3=Color3.fromRGB(0,0,0) f.BackgroundTransparency=0.5
+    local t=Instance.new("TextLabel",f) t.Size=UDim2.new(1,0,0.6,0) t.BackgroundTransparency=1 t.Text="Kirada VN Hack\nTác giả: Kirada & Habato\nNgười làm & viết: Kirada & Hiếu TV" t.TextColor3=Color3.fromRGB(255,255,255) t.TextScaled=true
+    local i=Instance.new("ImageLabel",f) i.Size=UDim2.new(0,100,0,100) i.Position=UDim2.new(0.5,-50,0.6,0) i.BackgroundTransparency=1 i.Image="rbxassetid://75676578090181" i.ImageTransparency=1
     local tI=TweenInfo.new(1,Enum.EasingStyle.Sine)
     local fIT,fIF,fII=_t:Create(t,tI,{TextTransparency=0}),_t:Create(f,tI,{BackgroundTransparency=0.2}),_t:Create(i,tI,{ImageTransparency=0})
     local fOT,fOF,fOI=_t:Create(t,tI,{TextTransparency=1}),_t:Create(f,tI,{BackgroundTransparency=1}),_t:Create(i,tI,{ImageTransparency=1})
-    fIT:Play()
-    fIF:Play()
-    fII:Play()
-    fIT.Completed:Wait()
-    wait(5)
-    fOT:Play()
-    fOF:Play()
-    fOI:Play()
-    fOT.Completed:Wait()
-    s:Destroy()
+    fIT:Play() fIF:Play() fII:Play() fIT.Completed:Wait() wait(5) fOT:Play() fOF:Play() fOI:Play() fOT.Completed:Wait() s:Destroy()
 end
 _iA()
 
@@ -68,12 +35,8 @@ MinimizeButton({Image="rbxassetid://89326205091486",Size={60,60},Color=Color3.fr
 
 local function _aB(t,n,u,s)
     AddButton(t,{Name=n,Callback=function()
-        local success,err=pcall(function()
-            if u:find("http") then loadstring(game:HttpGet(u))()
-            else setclipboard(u) end
-        end)
-        if not success then _n:SetCore("SendNotification",{Title="Lỗi",Text="Không thể "..(u:find("http") and "chạy script " or "sao chép link ")..n..": "..tostring(err),Duration=5})
-        else _n:SetCore("SendNotification",{Title=s or n,Text="Đã "..(u:find("http") and "chạy script " or "sao chép link ")..(s or n).." vào clipboard!"..(s and " Nguồn: "..s or ""),Duration=u:find("http") and 5 or 10}) end
+        local s,e=pcall(function() if u:find("http") then loadstring(game:HttpGet(u))() else setclipboard(u) end end)
+        _n:SetCore("SendNotification",s and {Title=s or n,Text="Đã "..(u:find("http") and "chạy script " or "sao chép link ")..(s or n).." vào clipboard!"..(s and " Nguồn: "..s or ""),Duration=u:find("http") and 5 or 10} or {Title="Lỗi",Text="Không thể "..(u:find("http") and "chạy script " or "sao chép link ")..n..": "..tostring(e),Duration=5})
     end})
 end
 
@@ -110,39 +73,14 @@ _aB(T4,"Copy YouTube Link","https://www.youtube.com/@kiradavn","YouTube")
 _aB(T4,"Copy TikTok Link","https://www.tiktok.com/@offbyebyesad","TikTok")
 
 local function _aC()
-    local mt=getrawmetatable(game)
-    local _ni,_ii=mt.__namecall,mt.__index
-    setreadonly(mt,false)
-    mt.__namecall=function(self,...)
-        local args={...}
-        local method=getnamecallmethod()
-        if method=="FireServer" or method=="InvokeServer" then
-            if tostring(self)=="AntiCheat" or tostring(self)=="AC" or tostring(self)=="FlyDetection" or tostring(self)=="HeightCheck" then return end
-        end
-        return _ni(self,...)
-    end
-    mt.__index=function(self,key)
-        if self:IsA("Humanoid") and (key=="WalkSpeed" or key=="JumpPower" or key=="HipHeight") then return math.random(15,17)+math.random() end
-        if self:IsA("Character") and key=="Position" then
-            local pos=_ii(self,key)
-            return Vector3.new(pos.X+math.random(-0.1,0.1),pos.Y+math.random(-0.05,0.05),pos.Z+math.random(-0.1,0.1))
-        end
-        return _ii(self,key)
-    end
+    local mt=getrawmetatable(game) local _ni,_ii=mt.__namecall,mt.__index setreadonly(mt,false)
+    mt.__namecall=function(self,...) local m=getnamecallmethod() if (m=="FireServer" or m=="InvokeServer") and (tostring(self)=="AntiCheat" or tostring(self)=="AC" or tostring(self)=="FlyDetection" or tostring(self)=="HeightCheck") then return end return _ni(self,...) end
+    mt.__index=function(self,k) if self:IsA("Humanoid") and (k=="WalkSpeed" or k=="JumpPower" or k=="HipHeight") then return math.random(15,17)+math.random() end if self:IsA("Character") and k=="Position" then local p=_ii(self,k) return Vector3.new(p.X+math.random(-0.1,0.1),p.Y+math.random(-0.05,0.05),p.Z+math.random(-0.1,0.1)) end return _ii(self,k) end
     setreadonly(mt,true)
-    local char=_p.LocalPlayer.Character or _p.LocalPlayer.CharacterAdded:Wait()
-    local hum=char:WaitForChild("Humanoid")
-    local root=char:WaitForChild("HumanoidRootPart")
-    _ph:CreateCollisionGroup("NoClip")
-    _ph:CollisionGroupSetCollidable("NoClip","Default",false)
-    for _,part in pairs(char:GetDescendants()) do
-        if part:IsA("BasePart") then _ph:SetPartCollisionGroup(part,"NoClip") end
-    end
-    _r.Heartbeat:Connect(function()
-        if hum:GetState()==Enum.HumanoidStateType.Freefall or hum:GetState()==Enum.HumanoidStateType.Flying then
-            root.Velocity=root.Velocity+Vector3.new(math.random(-1,1)/10,math.random(-1,1)/10,math.random(-1,1)/10)
-        end
-    end)
+    local c=_p.LocalPlayer.Character or _p.LocalPlayer.CharacterAdded:Wait() local h=c:WaitForChild("Humanoid") local r=c:WaitForChild("HumanoidRootPart")
+    _ph:CreateCollisionGroup("NoClip") _ph:CollisionGroupSetCollidable("NoClip","Default",false)
+    for _,p in pairs(c:GetDescendants()) do if p:IsA("BasePart") then _ph:SetPartCollisionGroup(p,"NoClip") end end
+    _r.Heartbeat:Connect(function() if h:GetState()==Enum.HumanoidStateType.Freefall or h:GetState()==Enum.HumanoidStateType.Flying then r.Velocity=r.Velocity+Vector3.new(math.random(-1,1)/10,math.random(-1,1)/10,math.random(-1,1)/10) end end)
 end
 pcall(_aC)
 
