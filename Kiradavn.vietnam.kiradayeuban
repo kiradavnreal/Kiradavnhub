@@ -35,7 +35,7 @@ local function checkAdmin()
             else
                 StarterGui:SetCore("SendNotification", {
                     Title = "Cảnh Báo",
-                    Text = "Admin vô server sẽ đổi server trong 5s nữa",
+                    Text = "Admin vô server, sẽ đổi server trong 5 giây nữa...",
                     Duration = 5
                 })
                 wait(5)
@@ -46,7 +46,7 @@ local function checkAdmin()
         elseif player.Name:lower():find("admin") or player:GetRoleInGroup(game.CreatorId) ~= "Guest" then
             StarterGui:SetCore("SendNotification", {
                 Title = "Cảnh Báo",
-                Text = "Admin vô server sẽ đổi server trong 5s nữa",
+                Text = "Admin vô server, sẽ đổi server trong 5 giây nữa...",
                 Duration = 5
             })
             wait(5)
@@ -117,7 +117,7 @@ pcall(introAnimation)
 -- Tạo menu
 local window = MakeWindow({
     Hub = {Title = "Kirada VN", Animation = "YouTube: Kirada VN"},
-    Key = {KeySystem = false, Title = "Key System", Keys = {"1234"}, Notifi = {Notifications = true, CorrectKey = "Running the Script...", Incorrectkey = "The key is incorrect", CopyKeyLink = "Copied to Clipboard"}}
+    Key = {KeySystem = false, Title = "Hệ Thống Key", Keys = {"1234"}, Notifi = {Notifications = true, CorrectKey = "Đang chạy script...", Incorrectkey = "Key không đúng", CopyKeyLink = "Đã sao chép vào clipboard"}}
 })
 MinimizeButton({
     Image = "rbxassetid://89326205091486",
@@ -160,40 +160,40 @@ addButton(tab1, "H4X Script", "https://raw.githubusercontent.com/H4xScripts/Load
 addButton(tab1, "Nat Hub", "https://get.nathub.xyz/loader")
 addButton(tab1, "Quantum Hub", "https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua")
 addButton(tab1, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
-addButton(tab1, "OMG HUB sever vip free (getkey)", "https://pastefy.app/US0MtPIY/raw")
+addButton(tab1, "OMG HUB Server VIP Free (Get Key)", "https://pastefy.app/US0MtPIY/raw")
 addButton(tab1, "Giảm Lag", "https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
 
 -- Tab: Hop Server
 local tab2 = MakeTab({Name = "Hop Server"})
-addButton(tab2, "Teddy Hub (getkey)", "https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TEDDYHUB-FREEMIUM")
+addButton(tab2, "Teddy Hub (Get Key)", "https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TEDDYHUB-FREEMIUM")
 
 -- Tab: 99 Đêm
 local tab3 = MakeTab({Name = "99 Đêm"})
-addButton(tab3, "NATHUB (getkey)", "https://get.nathub.xyz/loader")
-addButton(tab3, "H4X (getkey)", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
-addButton(tab3, "Speed Hub (getkey)", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+addButton(tab3, "NATHUB (Get Key)", "https://get.nathub.xyz/loader")
+addButton(tab3, "H4X (Get Key)", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
+addButton(tab3, "Speed Hub (Get Key)", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
 addButton(tab3, "Hack Farm Kim Cương", "https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
 addButton(tab3, "Skibidi", "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
 
--- Tab: Key System
-local tab5 = MakeTab({Name = "Key System"})
-addButton(tab5, "Copy Speed Hub Key", "KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE", "Key System")
+-- Tab: Hệ Thống Key
+local tab5 = MakeTab({Name = "Hệ Thống Key"})
+addButton(tab5, "Sao Chép Key Speed Hub", "KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE", "Hệ Thống Key")
 
 -- Tab: Idol YTB Hack
 local tab6 = MakeTab({Name = "Idol YTB Hack"})
-addButton(tab6, "Copy Vịt Lỏd Link", "https://www.youtube.com/channel/UCQinN9_tN8ln_Mk3hqEfLLw", "Vịt Lỏd")
-addButton(tab6, "Copy EZ AK Gaming Link", "https://www.youtube.com/@akgamingytb999", "EZ AK Gaming")
-addButton(tab6, "Copy TBoy Link", "https://www.youtube.com/channel/UCTwTw3BeiQm2dNtsVeCxlYw", "TBoy")
+addButton(tab6, "Sao Chép Link Vịt Lỏd", "https://www.youtube.com/channel/UCQinN9_tN8ln_Mk3hqEfLLw", "Vịt Lỏd")
+addButton(tab6, "Sao Chép Link EZ AK Gaming", "https://www.youtube.com/@akgamingytb999", "EZ AK Gaming")
+addButton(tab6, "Sao Chép Link TBoy", "https://www.youtube.com/channel/UCTwTw3BeiQm2dNtsVeCxlYw", "TBoy")
 
 -- Tab: Mạng Xã Hội
 local tab4 = MakeTab({Name = "Mạng Xã Hội"})
-addButton(tab4, "Copy Discord Link", "https://discord.gg/kJ9ydA2PP4", "Discord")
-addButton(tab4, "Copy YouTube Link", "https://www.youtube.com/@kiradavn", "YouTube")
-addButton(tab4, "Copy TikTok Link", "https://www.tiktok.com/@offbyebyesad", "TikTok")
+addButton(tab4, "Sao Chép Link Discord", "https://discord.gg/kJ9ydA2PP4", "Discord")
+addButton(tab4, "Sao Chép Link YouTube", "https://www.youtube.com/@kiradavn", "YouTube")
+addButton(tab4, "Sao Chép Link TikTok", "https://www.tiktok.com/@offbyebyesad", "TikTok")
 
 -- Danh sách múi giờ (trừ Trung Quốc)
 local timeZones = {
-    {Name = "Việt Nam", Offset = 7 * 3600}, -- +07
+    {Name = "Việt Nam (Đắk Lắk/Sài Gòn)", Offset = 7 * 3600}, -- +07 ICT
     {Name = "Mỹ (Eastern)", Offset = -4 * 3600}, -- -04 EDT
     {Name = "Vương Quốc Anh", Offset = 1 * 3600}, -- +01 BST
     {Name = "Nhật Bản", Offset = 9 * 3600}, -- +09 JST
@@ -204,7 +204,7 @@ local timeZones = {
     {Name = "Úc (Sydney)", Offset = 10 * 3600}, -- +10 AEST
     {Name = "Canada (Eastern)", Offset = -3 * 3600} -- -03 EDT
 }
-local selectedTimeZone = timeZones[1] -- Mặc định: Việt Nam
+local selectedTimeZone = timeZones[1] -- Mặc định: Việt Nam (Đắk Lắk/Sài Gòn)
 
 -- Hiển thị thời gian thực và thời gian treo
 local startTime = os.time()
@@ -253,7 +253,6 @@ local function setupTimeDisplay()
     dropdownButton.TextScaled = true
     dropdownButton.Text = "Chọn quốc gia: " .. selectedTimeZone.Name
 
-    -- Tạo danh sách quốc gia
     local dropdownList = Instance.new("Frame", screenGui)
     dropdownList.Size = UDim2.new(0, 200, 0, #timeZones * 30)
     dropdownList.Position = UDim2.new(1, -210, 0, 120)
@@ -314,7 +313,7 @@ local function checkServerPing()
         if ping > pingThreshold then
             StarterGui:SetCore("SendNotification", {
                 Title = "Cảnh Báo",
-                Text = "Phát hiện server có ping cao (có thể là Trung Quốc), đang hop server...",
+                Text = "Phát hiện server ping cao (có thể là Trung Quốc), đang đổi server...",
                 Duration = 5
             })
             wait(2)
