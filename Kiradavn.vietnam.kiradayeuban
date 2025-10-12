@@ -89,7 +89,7 @@ local function introAnimation()
     local textLabel = Instance.new("TextLabel", frame)
     textLabel.Size = UDim2.new(1, 0, 0.6, 0)
     textLabel.BackgroundTransparency = 1
-    textLabel.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười làm & viết: Kirada & Hiếu TV"
+    textLabel.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười kiểm script: Nấm Gamer & Hiếu Hầu Nam\nNgười viết code: Hiếu Gamer & Hiếu TV 124"
     textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     textLabel.TextScaled = true
     local imageLabel = Instance.new("ImageLabel", frame)
@@ -166,6 +166,7 @@ addButton(tab1, "Quantum Hub", "https://raw.githubusercontent.com/flazhy/Quantum
 addButton(tab1, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
 addButton(tab1, "OMG HUB Server VIP Free (Get Key)", "https://pastefy.app/US0MtPIY/raw")
 addButton(tab1, "Giảm Lag", "https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
+addButton(tab1, "Maru Premium Fake", "https://raw.githubusercontent.com/hnc-roblox/Free/refs/heads/main/MaruHubPremiumFake.HNC%20Roblox.lua")
 
 -- Tab: Hop Server
 local tab2 = MakeTab({Name = "Hop Server"})
