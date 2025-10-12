@@ -1,11 +1,11 @@
--- Khai báo các service cần thiết
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local ContentProvider = game:GetService("ContentProvider")
 local StarterGui = game:GetService("StarterGui")
 local TeleportService = game:GetService("TeleportService")
 local RunService = game:GetService("RunService")
-local PhysicsService = game:GetService("PhysicsService")
+local UserInputService = game:GetService("UserInputService")
+local StatsService = game:GetService("Stats")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer.PlayerGui
 local gameId = game.PlaceId
@@ -133,10 +133,10 @@ MinimizeButton({
 })
 
 -- Hàm thêm nút vào tab
-local function addButton(tab, name, url, source)
+local function addButton(tab, name, url, source, callback)
     AddButton(tab, {
         Name = name,
-        Callback = function()
+        Callback = callback or function()
             local success, err = pcall(function()
                 if url:find("http") then
                     loadstring(game:HttpGet(url))()
@@ -197,17 +197,18 @@ addButton(tab4, "Sao Chép Link Discord", "https://discord.gg/kJ9ydA2PP4", "Disc
 addButton(tab4, "Sao Chép Link YouTube", "https://www.youtube.com/@kiradavn", "YouTube")
 addButton(tab4, "Sao Chép Link TikTok", "https://www.tiktok.com/@offbyebyesad", "TikTok")
 
--- Hiển thị thời gian treo
+-- Hiển thị thời gian treo, FPS, và tốc độ mạng
 local startTime = os.time()
+local afkLabel, fpsLabel, pingLabel
 local function setupTimeDisplay()
     local screenGui = Instance.new("ScreenGui", PlayerGui)
     screenGui.Name = "TimeDisplayGui"
     screenGui.IgnoreGuiInset = true
 
     -- Tạo TextLabel cho thời gian treo
-    local afkLabel = Instance.new("TextLabel", screenGui)
-    afkLabel.Size = UDim2.new(0, 200, 0, 30)
-    afkLabel.Position = UDim2.new(1, -210, 0, 10)
+    afkLabel = Instance.new("TextLabel", screenGui)
+    afkLabel.Size = UDim2.new(0, 150, 0, 25)
+    afkLabel.Position = UDim2.new(1, -160, 0, 10)
     afkLabel.BackgroundTransparency = 0.5
     afkLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     afkLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -216,62 +217,83 @@ local function setupTimeDisplay()
     afkLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
     afkLabel.BorderSizePixel = 2
 
-    -- Cập nhật thời gian treo mỗi frame
-    RunService.Heartbeat:Connect(function()
+    -- Tạo TextLabel cho FPS
+    fpsLabel = Instance.new("TextLabel", screenGui)
+    fpsLabel.Size = UDim2.new(0, 150, 0, 25)
+    fpsLabel.Position = UDim2.new(1, -160, 0, 35)
+    fpsLabel.BackgroundTransparency = 0.5
+    fpsLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    fpsLabel.TextScaled = true
+    fpsLabel.Text = "FPS: Đang tải..."
+    fpsLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
+    fpsLabel.BorderSizePixel = 2
+
+    -- Tạo TextLabel cho tốc độ mạng
+    pingLabel = Instance.new("TextLabel", screenGui)
+    pingLabel.Size = UDim2.new(0, 150, 0, 25)
+    pingLabel.Position = UDim2.new(1, -160, 0, 60)
+    pingLabel.BackgroundTransparency = 0.5
+    pingLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    pingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    pingLabel.TextScaled = true
+    pingLabel.Text = "Ping: Đang tải..."
+    pingLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
+    pingLabel.BorderSizePixel = 2
+
+    -- Cập nhật thời gian treo, FPS, và ping mỗi frame
+    RunService.Heartbeat:Connect(function(deltaTime)
         local elapsed = os.time() - startTime
         local hours = math.floor(elapsed / 3600)
         local minutes = math.floor((elapsed % 3600) / 60)
         local seconds = elapsed % 60
         afkLabel.Text = string.format("Thời gian treo: %d giờ %d phút %d giây", hours, minutes, seconds)
+        fpsLabel.Text = string.format("FPS: %d", math.floor(1 / deltaTime))
     end)
+
+    -- Cập nhật ping mỗi giây
+    spawn(function()
+        while true do
+            local ping = StatsService.Network.ServerStatsItem["Data Ping"]:GetValue()
+            pingLabel.Text = string.format("Ping: %d ms", math.floor(ping))
+            wait(1)
+        end
+    end)
+
+    -- Kéo thả thời gian treo, FPS, tốc độ mạng bằng chuột và cảm ứng
+    local function makeDraggable(label)
+        local dragging, dragInput, dragStart, startPos
+        label.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                dragStart = input.Position
+                startPos = label.Position
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
+            end
+        end)
+        label.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                dragInput = input
+            end
+        end)
+        UserInputService.InputChanged:Connect(function(input)
+            if input == dragInput and dragging then
+                local delta = input.Position - dragStart
+                label.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+            end
+        end)
+    end
+
+    -- Áp dụng kéo thả cho từng TextLabel
+    makeDraggable(afkLabel)
+    makeDraggable(fpsLabel)
+    makeDraggable(pingLabel)
 end
 pcall(setupTimeDisplay)
-
--- Chống anti-cheat
-local function antiCheat()
-    local mt = getrawmetatable(game)
-    local namecall = mt.__namecall
-    local index = mt.__index
-    setreadonly(mt, false)
-    -- Hook __namecall để chặn anti-cheat
-    mt.__namecall = function(self, ...)
-        local method = getnamecallmethod()
-        if (method == "FireServer" or method == "InvokeServer") and (tostring(self) == "AntiCheat" or tostring(self) == "AC" or tostring(self) == "FlyDetection" or tostring(self) == "HeightCheck") then
-            return
-        end
-        return namecall(self, ...)
-    end
-    -- Hook __index để random giá trị
-    mt.__index = function(self, key)
-        if self:IsA("Humanoid") and (key == "WalkSpeed" or key == "JumpPower" or key == "HipHeight") then
-            return math.random(15, 17) + math.random()
-        end
-        if self:IsA("Character") and key == "Position" then
-            local pos = index(self, key)
-            return Vector3.new(pos.X + math.random(-0.1, 0.1), pos.Y + math.random(-0.05, 0.05), pos.Z + math.random(-0.1, 0.1))
-        end
-        return index(self, key)
-    end
-    setreadonly(mt, true)
-    -- Tạo NoClip
-    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-    local humanoid = character:WaitForChild("Humanoid")
-    local rootPart = character:WaitForChild("HumanoidRootPart")
-    PhysicsService:CreateCollisionGroup("NoClip")
-    PhysicsService:CollisionGroupSetCollidable("NoClip", "Default", false)
-    for _, part in pairs(character:GetDescendants()) do
-        if part:IsA("BasePart") then
-            PhysicsService:SetPartCollisionGroup(part, "NoClip")
-        end
-    end
-    -- Randomize velocity để tránh phát hiện
-    RunService.Heartbeat:Connect(function()
-        if humanoid:GetState() == Enum.HumanoidStateType.Freefall or humanoid:GetState() == Enum.HumanoidStateType.Flying then
-            rootPart.Velocity = rootPart.Velocity + Vector3.new(math.random(-1, 1)/10, math.random(-1, 1)/10, math.random(-1, 1)/10)
-        end
-    end)
-end
-pcall(antiCheat)
 
 -- Đợi game tải hoàn toàn
 repeat task.wait() until game:IsLoaded() and PlayerGui
