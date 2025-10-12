@@ -1,3 +1,4 @@
+-- Khai báo các service cần thiết
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local ContentProvider = game:GetService("ContentProvider")
@@ -89,7 +90,7 @@ local function introAnimation()
     local textLabel = Instance.new("TextLabel", frame)
     textLabel.Size = UDim2.new(1, 0, 0.6, 0)
     textLabel.BackgroundTransparency = 1
-    textLabel.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười kiểm tra script: Nấm Gamer & Hiếu Hầu Nam\nNgười viết code: Hiếu Gamer & Hiếu TV 124"
+    textLabel.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười kiểm script: Nấm Gamer & Hiếu Hầu Nam\nNgười viết code: Hiếu Gamer & Hiếu TV 124"
     textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     textLabel.TextScaled = true
     local imageLabel = Instance.new("ImageLabel", frame)
@@ -132,25 +133,21 @@ MinimizeButton({
     StrokeColor = Color3.fromRGB(255, 0, 0)
 })
 
--- Hàm thêm nút vào tab
-local function addButton(tab, name, url, source, callback)
+-- Hàm thêm nút sao chép link/key
+local function addButton(tab, name, url, source)
     AddButton(tab, {
         Name = name,
-        Callback = callback or function()
+        Callback = function()
             local success, err = pcall(function()
-                if url:find("http") then
-                    loadstring(game:HttpGet(url))()
-                else
-                    setclipboard(url)
-                end
+                setclipboard(url)
             end)
             StarterGui:SetCore("SendNotification", success and {
                 Title = source or name,
-                Text = "Đã " .. (url:find("http") and "chạy script " or "sao chép link ") .. (source or name) .. " vào clipboard!" .. (source and " Nguồn: " .. source or ""),
-                Duration = url:find("http") and 5 or 10
+                Text = "Đã sao chép link " .. (source or name) .. " vào clipboard!" .. (source and " Nguồn: " .. source or ""),
+                Duration = 10
             } or {
                 Title = "Lỗi",
-                Text = "Không thể " .. (url:find("http") and "chạy script " or "sao chép link ") .. name .. ": " .. tostring(err),
+                Text = "Không thể sao chép link " .. name .. ": " .. tostring(err),
                 Duration = 5
             })
         end
@@ -164,7 +161,7 @@ addButton(tab1, "H4X Script", "https://raw.githubusercontent.com/H4xScripts/Load
 addButton(tab1, "Nat Hub", "https://get.nathub.xyz/loader")
 addButton(tab1, "Quantum Hub", "https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua")
 addButton(tab1, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
-addButton(tab1, "OMG HUB Server VIP Free (Get Key)", "https://pastefy.app/US0MtPIY/raw")
+addButton(tab1, "OMG HUB Server VIP Free (Get Key)", "https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua")
 addButton(tab1, "Giảm Lag", "https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
 addButton(tab1, "Maru Premium Fake", "https://raw.githubusercontent.com/hnc-roblox/Free/refs/heads/main/MaruHubPremiumFake.HNC%20Roblox.lua")
 
@@ -197,6 +194,43 @@ addButton(tab4, "Sao Chép Link Discord", "https://discord.gg/kJ9ydA2PP4", "Disc
 addButton(tab4, "Sao Chép Link YouTube", "https://www.youtube.com/@kiradavn", "YouTube")
 addButton(tab4, "Sao Chép Link TikTok", "https://www.tiktok.com/@offbyebyesad", "TikTok")
 
+-- Tab: Cài Đặt
+local tab7 = MakeTab({Name = "Cài Đặt"})
+local afkEnabled, fpsEnabled, pingEnabled = false, false, false
+
+-- Nút bật/tắt Thời gian treo
+AddButton(tab7, "Bật/Tắt Thời Gian Treo", nil, nil, function()
+    afkEnabled = not afkEnabled
+    afkLabel.Visible = afkEnabled
+    StarterGui:SetCore("SendNotification", {
+        Title = "Cài Đặt",
+        Text = "Đã " .. (afkEnabled and "bật" or "tắt") .. " Thời gian treo",
+        Duration = 5
+    })
+end)
+
+-- Nút bật/tắt FPS
+AddButton(tab7, "Bật/Tắt FPS", nil, nil, function()
+    fpsEnabled = not fpsEnabled
+    fpsLabel.Visible = fpsEnabled
+    StarterGui:SetCore("SendNotification", {
+        Title = "Cài Đặt",
+        Text = "Đã " .. (fpsEnabled and "bật" or "tắt") .. " FPS",
+        Duration = 5
+    })
+end)
+
+-- Nút bật/tắt Tốc độ mạng
+AddButton(tab7, "Bật/Tắt Tốc Độ Mạng", nil, nil, function()
+    pingEnabled = not pingEnabled
+    pingLabel.Visible = pingEnabled
+    StarterGui:SetCore("SendNotification", {
+        Title = "Cài Đặt",
+        Text = "Đã " .. (pingEnabled and "bật" or "tắt") .. " Tốc độ mạng",
+        Duration = 5
+    })
+end)
+
 -- Hiển thị thời gian treo, FPS, và tốc độ mạng
 local startTime = os.time()
 local afkLabel, fpsLabel, pingLabel
@@ -216,6 +250,19 @@ local function setupTimeDisplay()
     afkLabel.Text = "Thời gian treo: Đang tải..."
     afkLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
     afkLabel.BorderSizePixel = 2
+    afkLabel.Visible = false -- Mặc định ẩn
+
+    -- Tạo UIGradient cho 7 sắc cầu vồng
+    local gradient = Instance.new("UIGradient", afkLabel)
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 165, 0)),
+        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
+        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 255))
+    }
 
     -- Tạo TextLabel cho FPS
     fpsLabel = Instance.new("TextLabel", screenGui)
@@ -228,6 +275,19 @@ local function setupTimeDisplay()
     fpsLabel.Text = "FPS: Đang tải..."
     fpsLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
     fpsLabel.BorderSizePixel = 2
+    fpsLabel.Visible = false -- Mặc định ẩn
+
+    -- Tạo UIGradient cho 7 sắc cầu vồng
+    local gradient = Instance.new("UIGradient", fpsLabel)
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 165, 0)),
+        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
+        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 255))
+    }
 
     -- Tạo TextLabel cho tốc độ mạng
     pingLabel = Instance.new("TextLabel", screenGui)
@@ -240,6 +300,19 @@ local function setupTimeDisplay()
     pingLabel.Text = "Ping: Đang tải..."
     pingLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
     pingLabel.BorderSizePixel = 2
+    pingLabel.Visible = false -- Mặc định ẩn
+
+    -- Tạo UIGradient cho 7 sắc cầu vồng
+    local gradient = Instance.new("UIGradient", pingLabel)
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+        ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 165, 0)),
+        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
+        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 255))
+    }
 
     -- Cập nhật thời gian treo, FPS, và ping mỗi frame
     RunService.Heartbeat:Connect(function(deltaTime)
