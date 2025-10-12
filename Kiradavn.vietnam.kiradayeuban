@@ -4,9 +4,7 @@ local TweenService = game:GetService("TweenService")
 local ContentProvider = game:GetService("ContentProvider")
 local StarterGui = game:GetService("StarterGui")
 local TeleportService = game:GetService("TeleportService")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local StatsService = game:GetService("Stats")
+local SoundService = game:GetService("SoundService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer.PlayerGui
 local gameId = game.PlaceId
@@ -69,13 +67,27 @@ pcall(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua"))()
 end)
 
--- Preload ảnh logo cho intro và MinimizeButton
+-- Preload ảnh logo và âm thanh
 pcall(function()
     ContentProvider:PreloadAsync({
         "rbxassetid://75676578090181",
-        "rbxassetid://89326205091486"
+        "rbxassetid://89326205091486",
+        "rbxassetid://8987546731"
     })
 end)
+
+-- Phát âm thanh khi bật script
+local function playStartupSound()
+    local sound = Instance.new("Sound", SoundService)
+    sound.SoundId = "rbxassetid://8987546731"
+    sound.Volume = 1
+    sound.PlayOnRemove = false
+    sound:Play()
+    sound.Ended:Connect(function()
+        sound:Destroy()
+    end)
+end
+pcall(playStartupSound)
 
 -- Intro animation
 local function introAnimation()
@@ -134,7 +146,7 @@ MinimizeButton({
 })
 
 -- Hàm thêm nút sao chép link/key
-local function addButton(tab, name, url, source)
+local function addButton(tab, name, url)
     AddButton(tab, {
         Name = name,
         Callback = function()
@@ -142,8 +154,8 @@ local function addButton(tab, name, url, source)
                 setclipboard(url)
             end)
             StarterGui:SetCore("SendNotification", success and {
-                Title = source or name,
-                Text = "Đã sao chép link " .. (source or name) .. " vào clipboard!" .. (source and " Nguồn: " .. source or ""),
+                Title = "Thông Báo",
+                Text = "Đã sao chép link " .. name .. "!",
                 Duration = 10
             } or {
                 Title = "Lỗi",
@@ -180,193 +192,19 @@ addButton(tab3, "Ringta", "https://raw.githubusercontent.com/wefwef127382/99days
 
 -- Tab: Hệ Thống Key
 local tab5 = MakeTab({Name = "Hệ Thống Key"})
-addButton(tab5, "Sao Chép Key Speed Hub", "KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE", "Hệ Thống Key")
+addButton(tab5, "Sao Chép Key Speed Hub", "KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE")
 
 -- Tab: Idol YTB Hack
 local tab6 = MakeTab({Name = "Idol YTB Hack"})
-addButton(tab6, "Sao Chép Link Vịt Lỏd", "https://www.youtube.com/channel/UCQinN9_tN8ln_Mk3hqEfLLw", "Vịt Lỏd")
-addButton(tab6, "Sao Chép Link EZ AK Gaming", "https://www.youtube.com/@akgamingytb999", "EZ AK Gaming")
-addButton(tab6, "Sao Chép Link TBoy", "https://www.youtube.com/channel/UCTwTw3BeiQm2dNtsVeCxlYw", "TBoy")
+addButton(tab6, "Vịt Lỏd", "https://www.youtube.com/channel/UCQinN9_tN8ln_Mk3hqEfLLw")
+addButton(tab6, "EZ AK Gaming", "https://www.youtube.com/@akgamingytb999")
+addButton(tab6, "TBoy", "https://www.youtube.com/channel/UCTwTw3BeiQm2dNtsVeCxlYw")
 
 -- Tab: Mạng Xã Hội
 local tab4 = MakeTab({Name = "Mạng Xã Hội"})
-addButton(tab4, "Sao Chép Link Discord", "https://discord.gg/kJ9ydA2PP4", "Discord")
-addButton(tab4, "Sao Chép Link YouTube", "https://www.youtube.com/@kiradavn", "YouTube")
-addButton(tab4, "Sao Chép Link TikTok", "https://www.tiktok.com/@offbyebyesad", "TikTok")
-
--- Tab: Cài Đặt
-local tab7 = MakeTab({Name = "Cài Đặt"})
-local afkEnabled, fpsEnabled, pingEnabled = false, false, false
-
--- Nút bật/tắt Thời gian treo
-AddButton(tab7, "Bật/Tắt Thời Gian Treo", nil, nil, function()
-    afkEnabled = not afkEnabled
-    afkLabel.Visible = afkEnabled
-    StarterGui:SetCore("SendNotification", {
-        Title = "Cài Đặt",
-        Text = "Đã " .. (afkEnabled and "bật" or "tắt") .. " Thời gian treo",
-        Duration = 5
-    })
-end)
-
--- Nút bật/tắt FPS
-AddButton(tab7, "Bật/Tắt FPS", nil, nil, function()
-    fpsEnabled = not fpsEnabled
-    fpsLabel.Visible = fpsEnabled
-    StarterGui:SetCore("SendNotification", {
-        Title = "Cài Đặt",
-        Text = "Đã " .. (fpsEnabled and "bật" or "tắt") .. " FPS",
-        Duration = 5
-    })
-end)
-
--- Nút bật/tắt Tốc độ mạng
-AddButton(tab7, "Bật/Tắt Tốc Độ Mạng", nil, nil, function()
-    pingEnabled = not pingEnabled
-    pingLabel.Visible = pingEnabled
-    StarterGui:SetCore("SendNotification", {
-        Title = "Cài Đặt",
-        Text = "Đã " .. (pingEnabled and "bật" or "tắt") .. " Tốc độ mạng",
-        Duration = 5
-    })
-end)
-
--- Hiển thị thời gian treo, FPS, và tốc độ mạng
-local startTime = os.time()
-local afkLabel, fpsLabel, pingLabel
-local function setupTimeDisplay()
-    local screenGui = Instance.new("ScreenGui", PlayerGui)
-    screenGui.Name = "TimeDisplayGui"
-    screenGui.IgnoreGuiInset = true
-
-    -- Tạo TextLabel cho thời gian treo
-    afkLabel = Instance.new("TextLabel", screenGui)
-    afkLabel.Size = UDim2.new(0, 150, 0, 25)
-    afkLabel.Position = UDim2.new(1, -160, 0, 10)
-    afkLabel.BackgroundTransparency = 0.5
-    afkLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    afkLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    afkLabel.TextScaled = true
-    afkLabel.Text = "Thời gian treo: Đang tải..."
-    afkLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
-    afkLabel.BorderSizePixel = 2
-    afkLabel.Visible = false -- Mặc định ẩn
-
-    -- Tạo UIGradient cho 7 sắc cầu vồng
-    local gradient = Instance.new("UIGradient", afkLabel)
-    gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 165, 0)),
-        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
-        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 255))
-    }
-
-    -- Tạo TextLabel cho FPS
-    fpsLabel = Instance.new("TextLabel", screenGui)
-    fpsLabel.Size = UDim2.new(0, 150, 0, 25)
-    fpsLabel.Position = UDim2.new(1, -160, 0, 35)
-    fpsLabel.BackgroundTransparency = 0.5
-    fpsLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    fpsLabel.TextScaled = true
-    fpsLabel.Text = "FPS: Đang tải..."
-    fpsLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
-    fpsLabel.BorderSizePixel = 2
-    fpsLabel.Visible = false -- Mặc định ẩn
-
-    -- Tạo UIGradient cho 7 sắc cầu vồng
-    local gradient = Instance.new("UIGradient", fpsLabel)
-    gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 165, 0)),
-        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
-        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 255))
-    }
-
-    -- Tạo TextLabel cho tốc độ mạng
-    pingLabel = Instance.new("TextLabel", screenGui)
-    pingLabel.Size = UDim2.new(0, 150, 0, 25)
-    pingLabel.Position = UDim2.new(1, -160, 0, 60)
-    pingLabel.BackgroundTransparency = 0.5
-    pingLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    pingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    pingLabel.TextScaled = true
-    pingLabel.Text = "Ping: Đang tải..."
-    pingLabel.BorderColor3 = Color3.fromRGB(255, 0, 0)
-    pingLabel.BorderSizePixel = 2
-    pingLabel.Visible = false -- Mặc định ẩn
-
-    -- Tạo UIGradient cho 7 sắc cầu vồng
-    local gradient = Instance.new("UIGradient", pingLabel)
-    gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
-        ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 165, 0)),
-        ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 255, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
-        ColorSequenceKeypoint.new(0.83, Color3.fromRGB(75, 0, 130)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 255))
-    }
-
-    -- Cập nhật thời gian treo, FPS, và ping mỗi frame
-    RunService.Heartbeat:Connect(function(deltaTime)
-        local elapsed = os.time() - startTime
-        local hours = math.floor(elapsed / 3600)
-        local minutes = math.floor((elapsed % 3600) / 60)
-        local seconds = elapsed % 60
-        afkLabel.Text = string.format("Thời gian treo: %d giờ %d phút %d giây", hours, minutes, seconds)
-        fpsLabel.Text = string.format("FPS: %d", math.floor(1 / deltaTime))
-    end)
-
-    -- Cập nhật ping mỗi giây
-    spawn(function()
-        while true do
-            local ping = StatsService.Network.ServerStatsItem["Data Ping"]:GetValue()
-            pingLabel.Text = string.format("Ping: %d ms", math.floor(ping))
-            wait(1)
-        end
-    end)
-
-    -- Kéo thả thời gian treo, FPS, tốc độ mạng bằng chuột và cảm ứng
-    local function makeDraggable(label)
-        local dragging, dragInput, dragStart, startPos
-        label.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                dragging = true
-                dragStart = input.Position
-                startPos = label.Position
-                input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then
-                        dragging = false
-                    end
-                end)
-            end
-        end)
-        label.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                dragInput = input
-            end
-        end)
-        UserInputService.InputChanged:Connect(function(input)
-            if input == dragInput and dragging then
-                local delta = input.Position - dragStart
-                label.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-            end
-        end)
-    end
-
-    -- Áp dụng kéo thả cho từng TextLabel
-    makeDraggable(afkLabel)
-    makeDraggable(fpsLabel)
-    makeDraggable(pingLabel)
-end
-pcall(setupTimeDisplay)
+addButton(tab4, "Discord", "https://discord.gg/kJ9ydA2PP4")
+addButton(tab4, "YouTube", "https://www.youtube.com/@kiradavn")
+addButton(tab4, "TikTok", "https://www.tiktok.com/@offbyebyesad")
 
 -- Đợi game tải hoàn toàn
 repeat task.wait() until game:IsLoaded() and PlayerGui
