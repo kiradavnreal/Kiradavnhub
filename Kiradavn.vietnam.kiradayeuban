@@ -89,7 +89,7 @@ local function introAnimation()
     local textLabel = Instance.new("TextLabel", frame)
     textLabel.Size = UDim2.new(1, 0, 0.6, 0)
     textLabel.BackgroundTransparency = 1
-    textLabel.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười kiểm script: Nấm Gamer & Hiếu Hầu Nam\nNgười viết code: Hiếu Gamer & Hiếu TV 124"
+    textLabel.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười kiểm tra script: Nấm Gamer & Hiếu Hầu Nam\nNgười viết code: Hiếu Gamer & Hiếu TV 124"
     textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     textLabel.TextScaled = true
     local imageLabel = Instance.new("ImageLabel", frame)
