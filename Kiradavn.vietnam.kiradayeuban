@@ -5,12 +5,11 @@ local ContentProvider = game:GetService("ContentProvider")
 local StarterGui = game:GetService("StarterGui")
 local TeleportService = game:GetService("TeleportService")
 local SoundService = game:GetService("SoundService")
+local HttpService = game:GetService("HttpService")
+local VirtualUser = game:GetService("VirtualUser")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer.PlayerGui
 local gameId = game.PlaceId
-
--- Đợi game tải hoàn toàn
-repeat task.wait() until game:IsLoaded() and PlayerGui
 
 -- Kiểm tra game có được hỗ trợ hay không
 local supportedGames = {
@@ -24,20 +23,6 @@ if not supportedGames[gameId] then
         Duration = 10
     })
 end
-
--- Hàm phát hiện admin và hop server ngay lập tức (áp dụng cho mọi game)
-local function checkAdmin()
-    local adminIds = {[912348] = true, [120173604] = true}
-    Players.PlayerAdded:Connect(function(player)
-        if adminIds[player.UserId] or player.Name:lower():find("admin") or player:GetRoleInGroup(game.CreatorId) ~= "Guest" then
-            -- Hop server ngay lập tức khi phát hiện admin
-            pcall(function()
-                TeleportService:TeleportToPlaceInstance(gameId, game.JobId, LocalPlayer)
-            end)
-        end
-    end)
-end
-pcall(checkAdmin)
 
 -- Tải thư viện UI Redz V2
 pcall(function()
@@ -66,52 +51,64 @@ local function playStartupSound()
 end
 pcall(playStartupSound)
 
--- Intro animation
-local function introAnimation()
-    local screenGui = Instance.new("ScreenGui", PlayerGui)
-    screenGui.Name = "IntroGui"
-    screenGui.IgnoreGuiInset = true
-    local frame = Instance.new("Frame", screenGui)
-    frame.Size = UDim2.new(0, 300, 0, 150)
-    frame.Position = UDim2.new(0.5, -150, 0.5, -75)
-    frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    frame.BackgroundTransparency = 0.5
-    local textLabel = Instance.new("TextLabel", frame)
-    textLabel.Size = UDim2.new(1, 0, 0.6, 0)
-    textLabel.BackgroundTransparency = 1
-    textLabel.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười kiểm script: Nấm Gamer & Hiếu Hầu Nam\nNgười viết code: Hiếu Gamer & Hiếu TV 124"
-    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    textLabel.TextScaled = true
-    local imageLabel = Instance.new("ImageLabel", frame)
-    imageLabel.Size = UDim2.new(0, 100, 0, 100)
-    imageLabel.Position = UDim2.new(0.5, -50, 0.6, 0)
-    imageLabel.BackgroundTransparency = 1
-    imageLabel.Image = "rbxassetid://75676578090181"
-    imageLabel.ImageTransparency = 1
-    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine)
-    local fadeInText = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 0})
-    local fadeInFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 0.2})
-    local fadeInImage = TweenService:Create(imageLabel, tweenInfo, {ImageTransparency = 0})
-    local fadeOutText = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 1})
-    local fadeOutFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 1})
-    local fadeOutImage = TweenService:Create(imageLabel, tweenInfo, {ImageTransparency = 1})
-    fadeInText:Play()
-    fadeInFrame:Play()
-    fadeInImage:Play()
-    fadeInText.Completed:Wait()
-    wait(5)
-    fadeOutText:Play()
-    fadeOutFrame:Play()
-    fadeOutImage:Play()
-    fadeOutText.Completed:Wait()
-    screenGui:Destroy()
+-- Thay intro animation bằng thông báo
+pcall(function()
+    StarterGui:SetCore("SendNotification", {
+        Title = "Kirada Premium Hack",
+        Text = "Tác giả: Kirada & Habato\nNgười kiểm script: Nấm Gamer & Hiếu Hầu Nam\nNgười viết code: Hiếu Gamer & Hiếu TV 124",
+        Duration = 10
+    })
+end)
+
+-- Hệ thống Anti-AFK
+local function startAntiAFK()
+    local success, err = pcall(function()
+        while true do
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton1(Vector2.new(0, 0)) -- Giả lập nhấn chuột trái
+            task.wait(60) -- Chờ 60 giây trước khi lặp lại
+        end
+    end)
+    if not success then
+        StarterGui:SetCore("SendNotification", {
+            Title = "Lỗi Anti-AFK",
+            Text = "Không thể kích hoạt Anti-AFK: " .. tostring(err),
+            Duration = 5
+        })
+    end
 end
-pcall(introAnimation)
+coroutine.wrap(startAntiAFK)()
+
+-- Hệ thống Anti-Cheat cơ bản
+local function setupAntiCheat()
+    -- Ẩn tên script khỏi kiểm tra
+    local scriptInstance = game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild(script.Name)
+    if scriptInstance then
+        scriptInstance.Name = "CoreScript_" .. HttpService:GenerateGUID(false) -- Đổi tên ngẫu nhiên
+    end
+    -- Thêm độ trễ ngẫu nhiên cho các hành động để tránh bị phát hiện
+    local function addRandomDelay()
+        task.wait(math.random(0.1, 0.5))
+    end
+    -- Bao bọc các hành động nhạy cảm trong pcall
+    local function safeExecute(func)
+        local success, err = pcall(func)
+        if not success then
+            StarterGui:SetCore("SendNotification", {
+                Title = "Lỗi Anti-Cheat",
+                Text = "Lỗi khi thực thi: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+    return addRandomDelay, safeExecute
+end
+local addRandomDelay, safeExecute = setupAntiCheat()
 
 -- Tạo menu chính
 local window = MakeWindow({
-    Hub = {Title = "Kirada VN", Animation = "YouTube: Kirada VN"},
-    Key = {KeySystem = false, Title = "Hệ Thống Key", Keys = {}, Notifi = {Notifications = true, CorrectKey = "Đang chạy script...", Incorrectkey = "Key không đúng", CopyKeyLink = "Đã sao chép vào clipboard"}}
+    Hub = {Title = "Kirada Premium", Animation = "YouTube: Kirada Premium"},
+    Key = {KeySystem = false} -- Tắt hệ thống key
 })
 MinimizeButton({
     Image = "rbxassetid://89326205091486",
@@ -122,13 +119,13 @@ MinimizeButton({
     StrokeColor = Color3.fromRGB(255, 0, 0)
 })
 
--- Hàm thêm nút sao chép link/key
-local function addButton(tab, name, url)
+-- Hàm thêm nút sao chép link hoặc thực hiện hành động
+local function addButton(tab, name, callbackOrUrl)
     AddButton(tab, {
         Name = name,
-        Callback = function()
+        Callback = type(callbackOrUrl) == "function" and callbackOrUrl or function()
             local success, err = pcall(function()
-                setclipboard(url)
+                setclipboard(callbackOrUrl)
             end)
             StarterGui:SetCore("SendNotification", success and {
                 Title = "Thông Báo",
@@ -148,59 +145,106 @@ local function addScriptButton(tab, name, url)
     AddButton(tab, {
         Name = name,
         Callback = function()
-            local success, err = pcall(function()
+            addRandomDelay() -- Thêm độ trễ ngẫu nhiên để tránh anti-cheat
+            safeExecute(function()
                 loadstring(game:HttpGet(url))()
+                StarterGui:SetCore("SendNotification", {
+                    Title = "Thông Báo",
+                    Text = "Đã chạy script " .. name .. "!",
+                    Duration = 5
+                })
             end)
-            StarterGui:SetCore("SendNotification", success and {
-                Title = "Thông Báo",
-                Text = "Đã chạy script " .. name .. "!",
-                Duration = 5
-            } or {
+        end
+    })
+end
+
+-- Hàm tìm và chuyển đến server có ít người chơi nhất (ưu tiên server không có người)
+local function hopToLowPlayerServer()
+    safeExecute(function()
+        addRandomDelay() -- Thêm độ trễ ngẫu nhiên
+        local apiUrl = "https://games.roblox.com/v1/games/" .. gameId .. "/servers/Public?sortOrder=Asc&limit=100"
+        local response = game:HttpGet(apiUrl)
+        local data = HttpService:JSONDecode(response)
+
+        local servers = data.data
+        if not servers or #servers == 0 then
+            StarterGui:SetCore("SendNotification", {
                 Title = "Lỗi",
-                Text = "Không thể chạy script " .. name .. ": " .. tostring(err),
+                Text = "Không tìm thấy server nào!",
+                Duration = 5
+            })
+            return
+        end
+
+        -- Tìm server có ít người chơi nhất, ưu tiên server không có người (playing = 0)
+        local lowestPlayerCount = math.huge
+        local targetServer = nil
+
+        for _, server in ipairs(servers) do
+            if server.playing and server.playing <= lowestPlayerCount and server.id ~= game.JobId then
+                lowestPlayerCount = server.playing
+                targetServer = server
+                if server.playing == 0 then
+                    break -- Ưu tiên server không có người
+                end
+            end
+        end
+
+        if targetServer then
+            StarterGui:SetCore("SendNotification", {
+                Title = "Thông Báo",
+                Text = "Đang chuyển đến server với " .. lowestPlayerCount .. " người chơi...",
+                Duration = 5
+            })
+            addRandomDelay() -- Thêm độ trễ trước khi teleport
+            TeleportService:TeleportToPlaceInstance(gameId, targetServer.id, LocalPlayer)
+        else
+            StarterGui:SetCore("SendNotification", {
+                Title = "Lỗi",
+                Text = "Không tìm thấy server phù hợp để chuyển!",
                 Duration = 5
             })
         end
-    })
+    end)
 end
 
 -- Tab: Blox Fruit
 local tab1 = MakeTab({Name = "Blox Fruit"})
 addScriptButton(tab1, "W-AZURE", "https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua")
-addScriptButton(tab1, "H4X Script", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
-addScriptButton(tab1, "Nat Hub", "https://get.nathub.xyz/loader")
+addScriptButton(tab1, "H4X Script (getkey)", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
+addScriptButton(tab1, "Nat Hub (getkey)", "https://get.nathub.xyz/loader")
 addScriptButton(tab1, "Quantum Hub", "https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua")
-addScriptButton(tab1, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+addScriptButton(tab1, "Speed Hub (getkey)", "https://raw.githubusercontent.com/AhmadLargest/Speed-Hub-X/main/Speed%20Hub%20X.lua")
 addScriptButton(tab1, "OMG HUB Server VIP Free", "https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua")
 addScriptButton(tab1, "Giảm Lag", "https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
 addScriptButton(tab1, "Maru Premium Fake", "https://raw.githubusercontent.com/hnc-roblox/Free/refs/heads/main/MaruHubPremiumFake.HNC%20Roblox.lua")
 
--- Tab: Hop Server
+-- Tab: Hop Server (Teddy Hub, VisionX, Chuyển Server Ít Người)
 local tab2 = MakeTab({Name = "Hop Server"})
 addScriptButton(tab2, "Teddy Hub", "https://raw.githubusercontent.com/Teddyseetink/Haidepzai/refs/heads/main/TEDDYHUB-FREEMIUM")
 addScriptButton(tab2, "VisionX", "https://raw.githubusercontent.com/xSync-gg/VisionX/refs/heads/main/Server_Finder.lua")
+addButton(tab2, "Chuyển Server Ít Người", hopToLowPlayerServer)
 
 -- Tab: 99 Đêm
 local tab3 = MakeTab({Name = "99 Đêm"})
-addScriptButton(tab3, "NATHUB", "https://get.nathub.xyz/loader")
-addScriptButton(tab3, "H4X", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
-addScriptButton(tab3, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
+addScriptButton(tab3, "NATHUB (getkey)", "https://get.nathub.xyz/loader")
+addScriptButton(tab3, "H4X (getkey)", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
+addScriptButton(tab3, "Speed Hub (getkey)", "https://raw.githubusercontent.com/AhmadLargest/Speed-Hub-X/main/Speed%20Hub%20X.lua")
 addScriptButton(tab3, "Hack Farm Kim Cương", "https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
 addScriptButton(tab3, "Skibidi", "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
 addScriptButton(tab3, "Ringta", "https://raw.githubusercontent.com/wefwef127382/99daysloader.github.io/refs/heads/main/ringta.lua")
 
--- Tab: Hệ Thống Key
-local tab5 = MakeTab({Name = "Hệ Thống Key"})
-addButton(tab5, "Sao Chép Key Speed Hub", "KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE") -- Giữ sao chép key
-
 -- Tab: Idol YTB Hack
-local tab6 = MakeTab({Name = "Idol YTB Hack"})
-addButton(tab6, "Vịt Lỏd", "https://www.youtube.com/channel/UCQinN9_tN8ln_Mk3hqEfLLw")
-addButton(tab6, "EZ AK Gaming", "https://www.youtube.com/@akgamingytb999")
-addButton(tab6, "TBoy", "https://www.youtube.com/channel/UCTwTw3BeiQm2dNtsVeCxlYw")
+local tab4 = MakeTab({Name = "Idol YTB Hack"})
+addButton(tab4, "Vịt Lỏd", "https://www.youtube.com/channel/UCQinN9_tN8ln_Mk3hqEfLLw")
+addButton(tab4, "EZ AK Gaming", "https://www.youtube.com/@akgamingytb999")
+addButton(tab4, "TBoy", "https://www.youtube.com/channel/UCTwTw3BeiQm2dNtsVeCxlYw")
 
 -- Tab: Mạng Xã Hội
-local tab4 = MakeTab({Name = "Mạng Xã Hội"})
-addButton(tab4, "Discord", "https://discord.gg/kJ9ydA2PP4")
-addButton(tab4, "YouTube", "https://www.youtube.com/@kiradavn")
-addButton(tab4, "TikTok", "https://www.tiktok.com/@offbyebyesad")
+local tab5 = MakeTab({Name = "Mạng Xã Hội"})
+addButton(tab5, "Discord", "https://discord.gg/kJ9ydA2PP4")
+addButton(tab5, "YouTube", "https://www.youtube.com/@kiradavn")
+addButton(tab5, "TikTok", "https://www.tiktok.com/@offbyebyesad")
+
+-- Đợi game tải hoàn toàn
+repeat task.wait() until game:IsLoaded() and PlayerGui
