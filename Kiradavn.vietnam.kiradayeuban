@@ -99,7 +99,7 @@ local function introAnimation()
     fadeInFrame:Play()
     fadeInImage:Play()
     fadeInText.Completed:Wait()
-    wait(5)
+    wait(1,5)
     fadeOutText:Play()
     fadeOutFrame:Play()
     fadeOutImage:Play()
@@ -110,7 +110,8 @@ pcall(introAnimation)
 
 -- Tạo menu chính
 local window = MakeWindow({
-    Hub = {Title = "Kirada VN", Animation = "YouTube: Kirada VN"}
+    Hub = {Title = "Kirada VN", Animation = "YouTube: Kirada VN"},
+    Key = {KeySystem = false, Title = "Hệ Thống Key", Keys = {}, Notifi = {Notifications = true, CorrectKey = "Đang chạy script...", Incorrectkey = "Key không đúng", CopyKeyLink = "Đã sao chép vào clipboard"}}
 })
 MinimizeButton({
     Image = "rbxassetid://89326205091486",
@@ -152,7 +153,7 @@ local function addScriptButton(tab, name, url)
             end)
             StarterGui:SetCore("SendNotification", success and {
                 Title = "Thông Báo",
-                Text = "Đã chạy " .. name .. "!",
+                Text = "Đã chạy script " .. name .. "!",
                 Duration = 5
             } or {
                 Title = "Lỗi",
@@ -166,11 +167,13 @@ end
 -- Tab: Blox Fruit
 local tab1 = MakeTab({Name = "Blox Fruit"})
 addScriptButton(tab1, "W-AZURE", "https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua")
+addScriptButton(tab1, "H4X Script", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
+addScriptButton(tab1, "Nat Hub", "https://get.nathub.xyz/loader")
 addScriptButton(tab1, "Quantum Hub", "https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua")
+addScriptButton(tab1, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
 addScriptButton(tab1, "Tạo Server VIP Free", "https://raw.githubusercontent.com/JoshzzAlteregooo/FreePrivateServer/refs/heads/main/UniversalFreePrivateServerByJoshzz")
 addScriptButton(tab1, "Giảm Lag", "https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
 addScriptButton(tab1, "Maru Premium Fake", "https://raw.githubusercontent.com/hnc-roblox/Free/refs/heads/main/MaruHubPremiumFake.HNC%20Roblox.lua")
-addScriptButton(tab1, "Gravity Hub", "https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua")
 
 -- Tab: Hop Server
 local tab2 = MakeTab({Name = "Hop Server"})
@@ -185,6 +188,10 @@ addScriptButton(tab3, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/S
 addScriptButton(tab3, "Hack Farm Kim Cương", "https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
 addScriptButton(tab3, "Skibidi", "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
 addScriptButton(tab3, "Ringta", "https://raw.githubusercontent.com/wefwef127382/99daysloader.github.io/refs/heads/main/ringta.lua")
+
+-- Tab: Hệ Thống Key
+local tab5 = MakeTab({Name = "Hệ Thống Key"})
+addButton(tab5, "Sao Chép Key Speed Hub", "KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE") -- Giữ sao chép key
 
 -- Tab: Idol YTB Hack
 local tab6 = MakeTab({Name = "Idol YTB Hack"})
