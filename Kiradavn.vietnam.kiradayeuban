@@ -12,44 +12,6 @@ local gameId = game.PlaceId
 -- Đợi game tải hoàn toàn
 repeat task.wait() until game:IsLoaded() and PlayerGui
 
--- Kiểm tra thời gian bảo trì
-local function checkMaintenance()
-    local currentTime = os.time()
-    local maintenanceTime = os.time({year=2025, month=10, day=16, hour=13, min=10, sec=0}) -- 13:10, 16/10/2025
-    local fourHoursBefore = maintenanceTime - 4*3600 -- 4 tiếng trước (9:10)
-    
-    if currentTime < maintenanceTime then
-        StarterGui:SetCore("SendNotification", {
-            Title = "Thông Báo Bảo Trì Script",
-            Text = "Script đang được cập nhật và sẽ hoàn thành vào 13:10, 16/10/2025. Vui lòng chờ đợi! - Habato",
-            Duration = 15
-        })
-        -- Hiển thị thông báo trên màn hình
-        local screenGui = Instance.new("ScreenGui", PlayerGui)
-        screenGui.Name = "MaintenanceGui"
-        screenGui.IgnoreGuiInset = true
-        local frame = Instance.new("Frame", screenGui)
-        frame.Size = UDim2.new(0, 400, 0, 200)
-        frame.Position = UDim2.new(0.5, -200, 0.5, -100)
-        frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-        frame.BackgroundTransparency = 0.5
-        local textLabel = Instance.new("TextLabel", frame)
-        textLabel.Size = UDim2.new(1, 0, 1, 0)
-        textLabel.BackgroundTransparency = 1
-        textLabel.Text = "THÔNG BÁO\nScript đang được cập nhật!\nThời gian hoàn thành: 13:10, 16/10/2025\nVui lòng chờ đợi!\n- Habato"
-        textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        textLabel.TextScaled = true
-        -- Dừng script
-        return false
-    end
-    return true
-end
-
--- Nếu đang bảo trì, dừng script
-if not checkMaintenance() then
-    return
-end
-
 -- Kiểm tra game có được hỗ trợ hay không
 local supportedGames = {
     [2753915549] = "Blox Fruits",
@@ -58,19 +20,24 @@ local supportedGames = {
 if not supportedGames[gameId] then
     StarterGui:SetCore("SendNotification", {
         Title = "Thông Báo",
-        Text = "Cảm ơn bạn đã sử dụng script của mình nhé 😘",
-        Duration = 10
+        Text = "Cảm ơn bạn đã sử dụng script của Kirada VN! 😘",
+        Duration = 10,
+        Icon = "rbxassetid://75676578090181"
     })
 end
 
--- Hàm phát hiện admin và hop server ngay lập tức (áp dụng cho mọi game)
+-- Hàm phát hiện admin và hop server ngay lập tức
 local function checkAdmin()
     local adminIds = {[912348] = true, [120173604] = true}
     Players.PlayerAdded:Connect(function(player)
         if adminIds[player.UserId] or player.Name:lower():find("admin") or player:GetRoleInGroup(game.CreatorId) ~= "Guest" then
-            -- Hop server ngay lập tức khi phát hiện admin
             pcall(function()
                 TeleportService:TeleportToPlaceInstance(gameId, game.JobId, LocalPlayer)
+                StarterGui:SetCore("SendNotification", {
+                    Title = "Cảnh Báo",
+                    Text = "Phát hiện admin, đang chuyển server...",
+                    Duration = 5
+                })
             end)
         end
     end)
@@ -82,7 +49,7 @@ pcall(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua"))()
 end)
 
--- Preload ảnh logo và âm thanh
+-- Preload tài nguyên
 pcall(function()
     ContentProvider:PreloadAsync({
         "rbxassetid://75676578090181",
@@ -91,7 +58,7 @@ pcall(function()
     })
 end)
 
--- Phát âm thanh 8987546731 một lần
+-- Phát âm thanh khởi động
 local function playStartupSound()
     local sound = Instance.new("Sound", SoundService)
     sound.SoundId = "rbxassetid://8987546731"
@@ -104,43 +71,56 @@ local function playStartupSound()
 end
 pcall(playStartupSound)
 
--- Intro animation
+-- Intro animation (hiển thị trong 3 giây)
 local function introAnimation()
     local screenGui = Instance.new("ScreenGui", PlayerGui)
     screenGui.Name = "IntroGui"
     screenGui.IgnoreGuiInset = true
+
     local frame = Instance.new("Frame", screenGui)
-    frame.Size = UDim2.new(0, 300, 0, 150)
-    frame.Position = UDim2.new(0.5, -150, 0.5, -75)
-    frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    frame.BackgroundTransparency = 0.5
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    frame.BackgroundTransparency = 1
+
+    local logo = Instance.new("ImageLabel", frame)
+    logo.Size = UDim2.new(0, 200, 0, 200)
+    logo.Position = UDim2.new(0.5, -100, 0.4, -100)
+    logo.BackgroundTransparency = 1
+    logo.Image = "rbxassetid://75676578090181"
+    logo.ImageTransparency = 1
+
     local textLabel = Instance.new("TextLabel", frame)
-    textLabel.Size = UDim2.new(1, 0, 0.6, 0)
+    textLabel.Size = UDim2.new(0.8, 0, 0.2, 0)
+    textLabel.Position = UDim2.new(0.5, 0, 0.7, 0)
     textLabel.BackgroundTransparency = 1
     textLabel.Text = "Kirada VN Hack\nTác giả: Kirada & Habato\nNgười kiểm script: Nấm Gamer & Hiếu Hầu Nam\nNgười viết code: Hiếu Gamer & Hiếu TV 124"
     textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     textLabel.TextScaled = true
-    local imageLabel = Instance.new("ImageLabel", frame)
-    imageLabel.Size = UDim2.new(0, 100, 0, 100)
-    imageLabel.Position = UDim2.new(0.5, -50, 0.6, 0)
-    imageLabel.BackgroundTransparency = 1
-    imageLabel.Image = "rbxassetid://75676578090181"
-    imageLabel.ImageTransparency = 1
-    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine)
+    textLabel.TextTransparency = 1
+    textLabel.Font = Enum.Font.GothamBold
+
+    local gradient = Instance.new("UIGradient", frame)
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 50, 50)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 50, 255))
+    })
+
+    local tweenInfo = TweenInfo.new(1.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+    local fadeInFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 0.3})
+    local fadeInLogo = TweenService:Create(logo, tweenInfo, {ImageTransparency = 0})
     local fadeInText = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 0})
-    local fadeInFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 0.2})
-    local fadeInImage = TweenService:Create(imageLabel, tweenInfo, {ImageTransparency = 0})
-    local fadeOutText = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 1})
     local fadeOutFrame = TweenService:Create(frame, tweenInfo, {BackgroundTransparency = 1})
-    local fadeOutImage = TweenService:Create(imageLabel, tweenInfo, {ImageTransparency = 1})
-    fadeInText:Play()
+    local fadeOutLogo = TweenService:Create(logo, tweenInfo, {ImageTransparency = 1})
+    local fadeOutText = TweenService:Create(textLabel, tweenInfo, {TextTransparency = 1})
+
     fadeInFrame:Play()
-    fadeInImage:Play()
+    fadeInLogo:Play()
+    fadeInText:Play()
     fadeInText.Completed:Wait()
-    wait(5)
-    fadeOutText:Play()
+    wait(3) -- Hiển thị trong 3 giây
     fadeOutFrame:Play()
-    fadeOutImage:Play()
+    fadeOutLogo:Play()
+    fadeOutText:Play()
     fadeOutText.Completed:Wait()
     screenGui:Destroy()
 end
@@ -148,19 +128,19 @@ pcall(introAnimation)
 
 -- Tạo menu chính
 local window = MakeWindow({
-    Hub = {Title = "Kirada VN", Animation = "YouTube: Kirada VN"},
-    Key = {KeySystem = false, Title = "Hệ Thống Key", Keys = {}, Notifi = {Notifications = true, CorrectKey = "Đang chạy script...", Incorrectkey = "Key không đúng", CopyKeyLink = "Đã sao chép vào clipboard"}}
-})
-MinimizeButton({
-    Image = "rbxassetid://89326205091486",
-    Size = {60, 60},
-    Color = Color3.fromRGB(10, 10, 10),
-    Corner = true,
-    Stroke = false,
-    StrokeColor = Color3.fromRGB(255, 0, 0)
+    Hub = {Title = "Kirada VN Hub", Animation = "YouTube: Kirada VN"}
 })
 
--- Hàm thêm nút sao chép link/key
+MinimizeButton({
+    Image = "rbxassetid://89326205091486",
+    Size = {50, 50},
+    Color = Color3.fromRGB(30, 30, 30),
+    Corner = true,
+    Stroke = true,
+    StrokeColor = Color3.fromRGB(255, 50, 50)
+})
+
+-- Hàm thêm nút sao chép link
 local function addButton(tab, name, url)
     AddButton(tab, {
         Name = name,
@@ -170,11 +150,12 @@ local function addButton(tab, name, url)
             end)
             StarterGui:SetCore("SendNotification", success and {
                 Title = "Thông Báo",
-                Text = "Đã sao chép link " .. name .. "!",
-                Duration = 10
+                Text = "Đã sao chép " .. name .. "!",
+                Duration = 5,
+                Icon = "rbxassetid://75676578090181"
             } or {
                 Title = "Lỗi",
-                Text = "Không thể sao chép link " .. name .. ": " .. tostring(err),
+                Text = "Không thể sao chép " .. name .. ": " .. tostring(err),
                 Duration = 5
             })
         end
@@ -191,8 +172,9 @@ local function addScriptButton(tab, name, url)
             end)
             StarterGui:SetCore("SendNotification", success and {
                 Title = "Thông Báo",
-                Text = "Đã chạy script " .. name .. "!",
-                Duration = 5
+                Text = "Đã chạy script " .. name .. " thành công!",
+                Duration = 5,
+                Icon = "rbxassetid://75676578090181"
             } or {
                 Title = "Lỗi",
                 Text = "Không thể chạy script " .. name .. ": " .. tostring(err),
@@ -205,10 +187,7 @@ end
 -- Tab: Blox Fruit
 local tab1 = MakeTab({Name = "Blox Fruit"})
 addScriptButton(tab1, "W-AZURE", "https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua")
-addScriptButton(tab1, "H4X Script", "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua")
-addScriptButton(tab1, "Nat Hub", "https://get.nathub.xyz/loader")
 addScriptButton(tab1, "Quantum Hub", "https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua")
-addScriptButton(tab1, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua")
 addScriptButton(tab1, "Tạo Server VIP Free", "https://raw.githubusercontent.com/JoshzzAlteregooo/FreePrivateServer/refs/heads/main/UniversalFreePrivateServerByJoshzz")
 addScriptButton(tab1, "Giảm Lag", "https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua")
 addScriptButton(tab1, "Maru Premium Fake", "https://raw.githubusercontent.com/hnc-roblox/Free/refs/heads/main/MaruHubPremiumFake.HNC%20Roblox.lua")
@@ -226,10 +205,6 @@ addScriptButton(tab3, "Speed Hub", "https://raw.githubusercontent.com/AhmadV99/S
 addScriptButton(tab3, "Hack Farm Kim Cương", "https://raw.githubusercontent.com/sleepyvill/script/refs/heads/main/99nights.lua")
 addScriptButton(tab3, "Skibidi", "https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua")
 addScriptButton(tab3, "Ringta", "https://raw.githubusercontent.com/wefwef127382/99daysloader.github.io/refs/heads/main/ringta.lua")
-
--- Tab: Hệ Thống Key
-local tab5 = MakeTab({Name = "Hệ Thống Key"})
-addButton(tab5, "Sao Chép Key Speed Hub", "KfHLmNFnuaRmvbkQRwZGXDROXkxhdYAE")
 
 -- Tab: Idol YTB Hack
 local tab6 = MakeTab({Name = "Idol YTB Hack"})
